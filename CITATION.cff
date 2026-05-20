@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "ThermoStrife: historical-uprisings temperature companion to ThermoKourt"
+type: software
+version: "0.1.0"
+date-released: "2026-05-21"
+license: MIT
+url: "https://github.com/zerotonin/thermostrife"
+repository-code: "https://github.com/zerotonin/thermostrife"
+authors:
+  - family-names: Geurten
+    given-names: "Bart R.H."
+    orcid: "https://orcid.org/0000-0002-1816-3241"
+    affiliation: "Department of Zoology, University of Otago, Dunedin, New Zealand"
+keywords:
+  - climate-conflict
+  - heat-aggression
+  - historical-uprisings
+  - case-crossover
+  - permutation-test
+  - computational-social-science
+  - temperature-anomaly
+abstract: >-
+  ThermoStrife is the human-data companion to the ThermoKourt
+  Drosophila pipeline. It curates 112 violent uprisings,
+  revolutions, and massacres from 1750 to 2026 with day-of-event
+  temperature and station-and-month-matched decadal baseline,
+  and tests whether positive temperature anomalies are
+  over-represented on uprising days against a case-crossover
+  null built from matched non-event days at the same station.
+references:
+  - type: software
+    title: "ThermoKourt"
+    authors:
+      - family-names: Geurten
+        given-names: "Bart R.H."
+    url: "https://github.com/zerotonin/thermokourt"

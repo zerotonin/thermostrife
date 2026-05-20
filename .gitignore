@@ -1,0 +1,26 @@
+thermostrife/__pycache__/
+**/__pycache__/
+*.pyc
+thermostrife.egg-info/
+*.log
+_build/
+docs/_build/
+.coverage
+coverage.xml
+.pytest_cache/
+.ruff_cache/
+
+# Data interim / processed — only raw is committed
+data/interim/*
+data/processed/*
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# Local credentials for climate APIs (CDS API key etc.)
+.cdsapirc
+.env
+
+# Reports / figures (generated)
+reports/figs/
+reports/results.json
+.pytest_cache/
