@@ -6,6 +6,29 @@ versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added — Sprint 2 (Tier-2 HadCET observatory)
+
+- **HadCET adapter.** New `thermostrife/sources/hadcet_src.py`.
+  Mirrors the Met Office daily totals files (Tmax 1878+, mean 1772+,
+  Tmin 1878+) into `data/raw/observatories/hadcet/`; resolves
+  British-Isles events (lat-lon bounding box) and falls back to the
+  mean series with a `tier2_hadcet_mean` provenance flag when the
+  Tmax record doesn't go far enough back.
+- **Cascading resolver** `thermostrife.lookup.resolve_event_anomaly`
+  with a shared `AnomalyFetch` dataclass. Walks Tier 1 → Tier 2 →
+  ... until one tier returns a single-source `(event, baseline)`
+  pair; the analysis only sees the consistent pair, never a mixed
+  one.
+- `scripts/validate_cascade.py` replaces the per-tier validate
+  script and writes `reports/cascade_validation.md`.
+- `tests/test_validation.py` now exercises the full cascade and
+  raises `MIN_RESOLVED` from 8 to 10 (Tier 2 picks up Peterloo and
+  Irish 1798).
+
+First Sprint-2 coverage numbers: **60 / 112 resolved** (Tier 1: 58,
+Tier 2 HadCET: 2). Mean anomaly +1.46 °C, median +1.41 °C; 38
+positive, 22 negative.
+
 ### Added — Sprint 1 (Tier-1 weather backfill)
 
 - **meteostat adapter.** New `thermostrife/sources/meteostat_src.py`
