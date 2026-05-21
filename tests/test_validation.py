@@ -35,7 +35,7 @@ from thermostrife.lookup import resolve_event_anomaly
 pytestmark = pytest.mark.network
 
 
-MIN_RESOLVED = 10  # was 8 under Tier 1 only; Tier 2 adds Peterloo + Irish
+MIN_RESOLVED = 13  # Tier 4 (20CRv3) now picks up Paris 1871, Chicago 1919, Watts 1965
 MIN_BASELINE_DAYS = 20
 
 
