@@ -23,7 +23,7 @@ dependencies:
   - sphinx>=7.2
   - pip
   - pip:
-      - meteostat>=1.6
+      - meteostat>=2.0
       - cdsapi>=0.6
       - furo>=2024.1
       - myst-parser>=2.0

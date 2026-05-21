@@ -39,7 +39,7 @@ dependencies = [
 
 [project.optional-dependencies]
 climate = [
-    "meteostat>=1.6",
+    "meteostat>=2.0",  # v2.x module-level API (meteostat.stations.nearby, meteostat.daily); v1.x has Stations/Daily classes and is incompatible
     "cdsapi>=0.6",
     "xarray>=2024.1",
     "netCDF4>=1.6",
