@@ -6,6 +6,25 @@ versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added — Sprint 4 (Tier-4 20CRv3 reanalysis)
+
+- **20CRv3 adapter.** New `thermostrife/sources/twentycr_src.py`
+  serves daily Tmax from NOAA's Twentieth Century Reanalysis V3
+  (1806-1980, 1° global grid) via the NOAA PSL THREDDS OPeNDAP
+  endpoint. Caches one year's daily slice per grid cell as parquet
+  (`data/cache/twentycr/<cell>/<year>.parquet`) so repeated baseline
+  queries on the same cell hit one network round-trip per year.
+- **Cascade Tier 4** wired into `lookup.resolve_event_anomaly`. With
+  Tier 3 (ERA5) still stubbed, 20CRv3 is now the fallback for any
+  1806-1980 event Tier 1 and Tier 2 miss.
+- All 13 hand-verified rows now resolve. The previously-missing
+  three — Paris Commune 1871 (+0.09 °C), Chicago Red Summer 1919
+  (+4.34 °C), Watts Riots 1965 (+2.01 °C) — go via Tier 4. Their
+  smaller magnitudes vs. the manually curated anomalies reflect
+  the 1° grid's regional smoothing (a single grid cell averages
+  ~110 × 80 km), not disagreement on the direction of the signal.
+- `test_validation.MIN_RESOLVED` raised from 10 to 13.
+
 ### Added — Sprint 2 (Tier-2 HadCET observatory)
 
 - **HadCET adapter.** New `thermostrife/sources/hadcet_src.py`.
