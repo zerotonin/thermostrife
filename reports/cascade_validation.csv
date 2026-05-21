@@ -9,63 +9,63 @@ event_id,date,manual_C,event_C,baseline_mean_C,baseline_std_C,baseline_n,anomaly
 1798_irish_rebellion,1798-05-23,,12.4,10.957094594594595,2.580714065782301,296.0,1.442905405405405,HadCET,tier2_hadcet_mean,HadCET mean reading; baseline n=296 same-month mean values
 1800_gabriels_rebellion,1800-08-30,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
 1819_peterloo,1819-08-16,,18.7,14.924999999999997,1.929147524035299,296.0,3.775000000000002,HadCET,tier2_hadcet_mean,HadCET mean reading; baseline n=296 same-month mean values
-1823_demerara,1823-08-18,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1825_decembrist,1825-12-26,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1831_nat_turner,1831-08-21,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1848_berlin_march,1848-03-18,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1848_june_days,1848-06-22,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1848_milan_five_days,1848-03-18,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1848_vienna_october,1848-10-06,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1851_jintian,1851-01-11,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1857_bibighar_cawnpore,1857-07-15,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1857_meerut_mutiny,1857-05-10,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1857_siege_delhi,1857-06-08,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1863_nyc_draft_riots,1863-07-13,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1866_memphis_massacre,1866-05-01,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1866_new_orleans_massacre,1866-07-30,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1871_paris_commune,1871-05-21,22.0,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1900_boxer_rebellion,1900-06-20,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1823_demerara,1823-08-18,,23.697503662109398,23.484432927231136,0.18379750368314132,326.0,0.21307073487826145,20CRv3_+07_302,tier4_20crv3,"20CRv3 cell (7°, 302°E); baseline n=326 same-month Tmax values"
+1825_decembrist,1825-12-26,,30.816247558593773,30.86646748984734,0.7331397953071724,328.0,-0.05021993125356872,20CRv3_+60_030,tier4_20crv3,"20CRv3 cell (60°, 30°E); baseline n=328 same-month Tmax values"
+1831_nat_turner,1831-08-21,,27.895013427734398,27.818423948697536,0.7303676661651488,326.0,0.07658947903686197,20CRv3_+37_283,tier4_20crv3,"20CRv3 cell (37°, 283°E); baseline n=326 same-month Tmax values"
+1848_berlin_march,1848-03-18,,7.830224609375023,3.1465814321319248,4.82005586977991,326.0,4.683643177243098,20CRv3_+53_013,tier4_20crv3,"20CRv3 cell (53°, 13°E); baseline n=326 same-month Tmax values"
+1848_june_days,1848-06-22,,19.138543701171898,18.904824586898584,2.5452225082917477,315.0,0.23371911427331327,20CRv3_+49_002,tier4_20crv3,"20CRv3 cell (49°, 2°E); baseline n=315 same-month Tmax values"
+1848_milan_five_days,1848-03-18,,7.010430908203148,11.02233351256952,3.761384919489805,326.0,-4.011902604366373,20CRv3_+45_009,tier4_20crv3,"20CRv3 cell (45°, 9°E); baseline n=326 same-month Tmax values"
+1848_vienna_october,1848-10-06,,16.870263671875023,12.625253202857063,3.7954043707660055,328.0,4.245010469017959,20CRv3_+48_016,tier4_20crv3,"20CRv3 cell (48°, 16°E); baseline n=328 same-month Tmax values"
+1851_jintian,1851-01-11,,15.794122314453148,16.626960595253806,2.4526183979338816,326.0,-0.832838280800658,20CRv3_+24_110,tier4_20crv3,"20CRv3 cell (24°, 110°E); baseline n=326 same-month Tmax values"
+1857_bibighar_cawnpore,1857-07-15,,36.56533203125002,36.004622271017084,2.318744560706375,326.0,0.560709760232939,20CRv3_+26_080,tier4_20crv3,"20CRv3 cell (26°, 80°E); baseline n=326 same-month Tmax values"
+1857_meerut_mutiny,1857-05-10,,37.0513854980469,40.36546492313317,1.8264335846761661,326.0,-3.3140794250862697,20CRv3_+29_078,tier4_20crv3,"20CRv3 cell (29°, 78°E); baseline n=326 same-month Tmax values"
+1857_siege_delhi,1857-06-08,,39.1827331542969,40.14873066251242,2.4274813511618327,315.0,-0.9659975082155228,20CRv3_+29_077,tier4_20crv3,"20CRv3 cell (29°, 77°E); baseline n=315 same-month Tmax values"
+1863_nyc_draft_riots,1863-07-13,,30.949700927734398,28.024429489791046,2.349665605199014,326.0,2.9252714379433513,20CRv3_+41_286,tier4_20crv3,"20CRv3 cell (41°, 286°E); baseline n=326 same-month Tmax values"
+1866_memphis_massacre,1866-05-01,,25.890130615234398,25.113361200556046,3.91945258826336,333.0,0.7767694146783519,20CRv3_+35_270,tier4_20crv3,"20CRv3 cell (35°, 270°E); baseline n=333 same-month Tmax values"
+1866_new_orleans_massacre,1866-07-30,,32.76979980468752,33.28275129938702,1.7771260548357275,332.0,-0.5129514946995002,20CRv3_+30_270,tier4_20crv3,"20CRv3 cell (30°, 270°E); baseline n=332 same-month Tmax values"
+1871_paris_commune,1871-05-21,22.0,15.676141357421898,15.586629369068751,3.4341381197878356,326.0,0.08951198835314678,20CRv3_+49_002,tier4_20crv3,"20CRv3 cell (49°, 2°E); baseline n=326 same-month Tmax values"
+1900_boxer_rebellion,1900-06-20,,27.789300537109398,29.753602430555578,2.525111858624012,315.0,-1.96430189344618,20CRv3_+40_116,tier4_20crv3,"20CRv3 cell (40°, 116°E); baseline n=315 same-month Tmax values"
 1905_bloody_sunday,1905-01-22,,-5.0,-3.6166666666666667,5.2940409381687195,264.0,-1.3833333333333333,26063,tier1_ghcn,"meteostat: 26063, n_baseline=264"
-1910_mexican_revolution,1910-11-20,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1913_decena_tragica,1913-02-09,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1910_mexican_revolution,1910-11-20,,20.976586914062523,20.976602124410984,1.0655854571435561,315.0,-1.5210348461636158e-05,20CRv3_+19_261,tier4_20crv3,"20CRv3 cell (19°, 261°E); baseline n=315 same-month Tmax values"
+1913_decena_tragica,1913-02-09,,21.972650146484398,22.03787105663405,1.749722746428449,296.0,-0.0652209101496517,20CRv3_+19_261,tier4_20crv3,"20CRv3 cell (19°, 261°E); baseline n=296 same-month Tmax values"
 1916_easter_rising,1916-04-24,12.5,16.7,11.92246835443038,2.7483388776308075,316.0,4.777531645569619,03969,tier1_ghcn,"meteostat: 03969, n_baseline=316"
-1917_east_st_louis,1917-07-02,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1917_east_st_louis,1917-07-02,,30.655725097656273,30.0765635111246,2.7492524531286926,332.0,0.5791615865316722,20CRv3_+39_270,tier4_20crv3,"20CRv3 cell (39°, 270°E); baseline n=332 same-month Tmax values"
 1917_february_revolution,1917-03-08,,-5.9,-0.18036809815950924,4.84561478383472,326.0,-5.719631901840491,26063,tier1_ghcn,"meteostat: 26063, n_baseline=326"
 1917_october_revolution,1917-11-07,,3.4,0.808860759493671,4.1322330293827765,316.0,2.5911392405063287,26063,tier1_ghcn,"meteostat: 26063, n_baseline=316"
-1919_boston_police_strike,1919-09-09,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1919_chicago_red_summer,1919-07-27,35.0,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1919_dc_red_summer,1919-07-19,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1919_elaine_massacre,1919-09-30,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1919_boston_police_strike,1919-09-09,,27.993676757812523,21.789160543774823,3.4575418526929083,315.0,6.2045162140376995,20CRv3_+42_289,tier4_20crv3,"20CRv3 cell (42°, 289°E); baseline n=315 same-month Tmax values"
+1919_chicago_red_summer,1919-07-27,35.0,28.381921386718773,24.041496225838262,2.554009527893041,329.0,4.3404251608805104,20CRv3_+42_272,tier4_20crv3,"20CRv3 cell (42°, 272°E); baseline n=329 same-month Tmax values"
+1919_dc_red_summer,1919-07-19,,27.528375244140648,29.097924991911924,2.663213935176258,326.0,-1.5695497477712763,20CRv3_+39_283,tier4_20crv3,"20CRv3 cell (39°, 283°E); baseline n=326 same-month Tmax values"
+1919_elaine_massacre,1919-09-30,,33.06057128906252,32.73158658424522,2.9889309708283776,322.0,0.3289847048173016,20CRv3_+34_269,tier4_20crv3,"20CRv3 cell (34°, 269°E); baseline n=322 same-month Tmax values"
 1920_kapp_putsch,1920-03-13,,7.3,7.6144171779141105,5.203650268879692,326.0,-0.3144171779141107,10381,tier1_ghcn,"meteostat: 10381, n_baseline=326"
-1921_tulsa_massacre,1921-05-31,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1921_tulsa_massacre,1921-05-31,,29.461328125000023,23.57934738938159,3.3830553881889105,333.0,5.881980735618434,20CRv3_+36_264,tier4_20crv3,"20CRv3 cell (36°, 264°E); baseline n=333 same-month Tmax values"
 1923_beer_hall_putsch,1923-11-08,,4.9,5.431746031746032,5.222221792000877,315.0,-0.5317460317460316,10865,tier1_ghcn,"meteostat: 10865, n_baseline=315"
-1927_shanghai_massacre,1927-04-12,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1936_spanish_civil_war_start,1936-07-17,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1937_barcelona_may_days,1937-05-03,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1927_shanghai_massacre,1927-04-12,,13.955468750000023,18.984852236793177,4.188714343524264,315.0,-5.029383486793154,20CRv3_+31_121,tier4_20crv3,"20CRv3 cell (31°, 121°E); baseline n=315 same-month Tmax values"
+1936_spanish_civil_war_start,1936-07-17,,29.153863525390648,29.93083872414807,1.961472617254041,326.0,-0.7769751987574232,20CRv3_+35_357,tier4_20crv3,"20CRv3 cell (35°, 357°E); baseline n=326 same-month Tmax values"
+1937_barcelona_may_days,1937-05-03,,17.306604003906273,18.95634112862304,1.8338409490838596,331.0,-1.6497371247167685,20CRv3_+41_002,tier4_20crv3,"20CRv3 cell (41°, 2°E); baseline n=331 same-month Tmax values"
 1938_kristallnacht,1938-11-09,,11.1,6.62984126984127,3.6256602702275713,315.0,4.4701587301587296,10381,tier1_ghcn,"meteostat: 10381, n_baseline=315"
 1943_detroit_race_riot,1943-06-20,32.8,31.7,25.035555555555554,5.258358803047516,225.0,6.664444444444445,71538,tier1_ghcn,"meteostat: 71538, n_baseline=225"
-1943_warsaw_ghetto_uprising,1943-04-19,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1943_warsaw_ghetto_uprising,1943-04-19,,19.554528808593773,12.016570754278295,4.337255118840678,315.0,7.537958054315478,20CRv3_+52_021,tier4_20crv3,"20CRv3 cell (52°, 21°E); baseline n=315 same-month Tmax values"
 1943_zoot_suit_riots,1943-06-03,,21.3,25.121794871794872,4.369601231052431,78.0,-3.8217948717948715,72288,tier1_ghcn,"meteostat: 72288, n_baseline=78"
-1944_warsaw_uprising,1944-08-01,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1947_partition_punjab,1947-08-15,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1956_hungarian_revolution,1956-10-23,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1960_sharpeville_massacre,1960-03-21,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1965_watts_riots,1965-08-11,33.3,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1944_warsaw_uprising,1944-08-01,,22.826074218750023,23.375435255812473,4.240667968864148,333.0,-0.5493610370624502,20CRv3_+52_021,tier4_20crv3,"20CRv3 cell (52°, 21°E); baseline n=333 same-month Tmax values"
+1947_partition_punjab,1947-08-15,,40.44008789062502,36.956559425775275,2.3609245596622404,326.0,3.4835284648497478,20CRv3_+32_074,tier4_20crv3,"20CRv3 cell (32°, 74°E); baseline n=326 same-month Tmax values"
+1956_hungarian_revolution,1956-10-23,,19.730157470703148,16.094187337489238,3.5026632769754857,326.0,3.6359701332139096,20CRv3_+47_019,tier4_20crv3,"20CRv3 cell (47°, 19°E); baseline n=326 same-month Tmax values"
+1960_sharpeville_massacre,1960-03-21,,26.032983398437523,26.653262347824022,2.4558875622861627,326.0,-0.6202789493864991,20CRv3_-27_028,tier4_20crv3,"20CRv3 cell (-27°, 28°E); baseline n=326 same-month Tmax values"
+1965_watts_riots,1965-08-11,33.3,36.20952758789065,34.2014661730433,2.5329109393516984,326.0,2.0080614148473472,20CRv3_+34_242,tier4_20crv3,"20CRv3 cell (34°, 242°E); baseline n=326 same-month Tmax values"
 1967_detroit_riots,1967-07-23,32.2,30.6,27.274233128834354,3.6150810431525104,326.0,3.325766871165648,71538,tier1_ghcn,"meteostat: 71538, n_baseline=326"
 1967_newark_riots,1967-07-12,,31.7,29.563190184049077,3.6507610511987094,326.0,2.1368098159509223,72502,tier1_ghcn,"meteostat: 72502, n_baseline=326"
 1968_mlk_dc_riots,1968-04-04,21.0,20.6,17.72664576802508,5.7352006733907945,319.0,2.873354231974922,74594,tier1_ghcn,"meteostat: 74594, n_baseline=319"
 1968_paris_may,1968-05-10,,15.3,18.307361963190182,3.759698159442854,326.0,-3.0073619631901813,07149,tier1_ghcn,"meteostat: 07149, n_baseline=326"
-1968_prague_spring,1968-08-20,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1968_prague_spring,1968-08-20,,17.711145019531273,21.40726820120784,3.9760705164339862,326.0,-3.696123181676569,20CRv3_+50_014,tier4_20crv3,"20CRv3 cell (50°, 14°E); baseline n=326 same-month Tmax values"
 1968_tlatelolco,1968-10-02,,18.9,18.24173913043478,1.6817901181555184,115.0,0.6582608695652183,76675,tier1_ghcn,"meteostat: 76675, n_baseline=115"
 1969_stonewall,1969-06-28,35.6,34.4,25.80125,4.316237295227723,320.0,8.598749999999999,72503,tier1_ghcn,"meteostat: 72503, n_baseline=320"
 1970_kent_state,1970-05-04,,22.2,20.757878787878788,5.175774912291856,330.0,1.4421212121212115,72521,tier1_ghcn,"meteostat: 72521, n_baseline=330"
 1971_attica_prison,1971-09-09,,25.6,21.173333333333336,4.591357153343022,315.0,4.426666666666666,72528,tier1_ghcn,"meteostat: 72528, n_baseline=315"
 1972_bloody_sunday_derry,1972-01-30,,2.3,8.154518072289157,1.9844434431670255,332.0,-5.854518072289157,03980,tier1_ghcn,"meteostat: 03980, n_baseline=332"
-1976_soweto_uprising,1976-06-16,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1976_soweto_uprising,1976-06-16,,19.680688476562523,18.9412282843339,2.4232061676749694,285.0,0.7394601922286235,20CRv3_-26_028,tier4_20crv3,"20CRv3 cell (-26°, 28°E); baseline n=285 same-month Tmax values"
 1978_iran_black_friday,1978-09-08,,33.0,31.615384615384617,3.2629359949201393,104.0,1.3846153846153832,40754,tier1_ghcn,"meteostat: 40754, n_baseline=104"
-1979_iranian_revolution,1979-02-11,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1979_iranian_revolution,1979-02-11,,6.843774414062523,3.1584546698898794,3.533410722053227,183.0,3.6853197441726433,20CRv3_+36_051,tier4_20crv3,"20CRv3 cell (36°, 51°E); baseline n=183 same-month Tmax values"
 1980_miami_liberty_city,1980-05-17,,29.4,29.538957055214727,1.8680267214352757,326.0,-0.13895705521472834,72202,tier1_ghcn,"meteostat: 72202, n_baseline=326"
-1980_nm_state_penitentiary,1980-02-02,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1980_nm_state_penitentiary,1980-02-02,,5.982843017578148,5.390084744092123,3.4250412058531725,161.0,0.5927582734860248,20CRv3_+36_254,tier4_20crv3,"20CRv3 cell (36°, 254°E); baseline n=161 same-month Tmax values"
 1980_stpauls_riot,1980-04-02,,12.0,11.956012658227849,3.523543750057521,316.0,0.04398734177215147,03740,tier1_ghcn,"meteostat: 03740, n_baseline=316"
 1981_brixton_riot,1981-04-10,,22.0,12.813418530351436,3.5085991626126654,313.0,9.186581469648564,03772,tier1_ghcn,"meteostat: 03772, n_baseline=313"
 1981_toxteth_riots,1981-07-03,,17.0,20.1521472392638,3.9442474165383286,326.0,-3.152147239263801,03334,tier1_ghcn,"meteostat: 03334, n_baseline=326"
