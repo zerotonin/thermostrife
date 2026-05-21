@@ -7,7 +7,6 @@ import pytest
 
 from thermostrife.constants import CURATED_CSV
 
-
 REQUIRED_COLUMNS = {
     "event_id", "event_name", "city", "country",
     "start_date", "end_date",

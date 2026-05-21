@@ -21,10 +21,15 @@ not in the pipeline.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 from scipy import stats
 
 from .constants import N_BOOTSTRAP, RNG_SEED
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 # ─────────────────────────────────────────────────────────────────
 #  H1: one-sample tests on event-day anomalies
@@ -95,8 +100,8 @@ def bootstrap_mean_ci(
 
 
 def case_crossover_conditional_logit(
-    event_table: "pd.DataFrame",
-    control_table: "pd.DataFrame",
+    event_table: pd.DataFrame,
+    control_table: pd.DataFrame,
     *,
     covariates: list[str] | None = None,
 ) -> dict:
@@ -119,8 +124,8 @@ def case_crossover_conditional_logit(
 
 
 def stratified_permutation(
-    event_table: "pd.DataFrame",
-    control_table: "pd.DataFrame",
+    event_table: pd.DataFrame,
+    control_table: pd.DataFrame,
     n_perm: int = 10_000,
     rng: np.random.Generator | None = None,
 ) -> dict:
@@ -128,10 +133,3 @@ def stratified_permutation(
     raise NotImplementedError(
         "stratified permutation awaits matched-control assembly."
     )
-
-
-# Avoid a hard pandas import at module top.
-try:
-    import pandas as pd  # noqa: F401
-except ImportError:  # pragma: no cover
-    pd = None  # type: ignore[assignment]

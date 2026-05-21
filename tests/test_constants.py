@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from itertools import pairwise
+
 import pytest
 
 from thermostrife import constants as C
@@ -13,7 +15,7 @@ class TestEraBins:
         assert len(C.ERA_LABELS) == len(C.ERA_BINS) - 1
 
     def test_bins_are_strictly_increasing(self):
-        assert all(a < b for a, b in zip(C.ERA_BINS, C.ERA_BINS[1:]))
+        assert all(a < b for a, b in pairwise(C.ERA_BINS))
 
     def test_first_and_last_boundary(self):
         assert C.ERA_BINS[0] == 1750

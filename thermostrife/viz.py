@@ -10,11 +10,15 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
 
 
 def plot_anomaly_raincloud(
-    event_anomaly: "np.ndarray",
-    control_anomaly: "np.ndarray | None",
+    event_anomaly: np.ndarray,
+    control_anomaly: np.ndarray | None,
     output_dir: Path,
     stem: str = "anomaly_raincloud",
 ) -> Path:
@@ -24,7 +28,7 @@ def plot_anomaly_raincloud(
 
 def plot_null_density(
     observed_stat: float,
-    null_draws: "np.ndarray",
+    null_draws: np.ndarray,
     output_dir: Path,
     stem: str = "null_density",
 ) -> Path:

@@ -28,7 +28,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     raise NotImplementedError(
-        "cli.main() awaits the inference engine in thermostrife.inference."
+        f"cli.main() awaits the inference engine in thermostrife.inference "
+        f"(would have processed {args.input_csv} -> {args.output})."
     )
 
 

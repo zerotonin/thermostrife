@@ -32,8 +32,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     raise NotImplementedError(
-        "backfill.main() awaits thermostrife.lookup.resolve() and "
-        "thermostrife.baseline.compute_baseline()."
+        f"backfill.main() awaits thermostrife.lookup.resolve() and "
+        f"thermostrife.baseline.compute_baseline() "
+        f"(would have processed {args.input_csv} -> {args.output})."
     )
 
 
