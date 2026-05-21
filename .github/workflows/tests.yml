@@ -49,11 +49,8 @@ jobs:
           if-no-files-found: warn
 
   lint:
-    name: ruff (advisory)
+    name: ruff
     runs-on: ubuntu-latest
-    # Advisory while the implementation modules are stubs.
-    # Flip continue-on-error to false once they're filled in.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
