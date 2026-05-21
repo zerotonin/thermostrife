@@ -7,7 +7,7 @@
 # ║    1. GHCN-Daily / ECA&D / DWD via meteostat                     ║
 # ║    2. Long-record observatories (HadCET, plus Paris/Berlin/      ║
 # ║       Brera/Vienna to come)                                      ║
-# ║    3. ERA5 grid cell via cdsapi (1940+)            [stub]        ║
+# ║    3. ERA5 grid cell via cdsapi (1981+; 20CRv3 owns 1940-1980)   ║
 # ║    4. 20CRv3 reanalysis grid cell (1806-1980)                    ║
 # ║                                                                  ║
 # ║  Each resolved row carries a temp_provenance flag so the         ║
@@ -188,7 +188,27 @@ def resolve_event_anomaly(
                 note=r.note,
             )
 
-    # ── Tier 3: ERA5 (stub) ──────────────────────────────────────
+    # ── Tier 3: ERA5 (1940+) ─────────────────────────────────────
+    try:
+        from .sources import era5_src
+    except ImportError:
+        era5_src = None  # type: ignore[assignment]
+
+    if era5_src is not None and era5_src.covers(when):
+        r = era5_src.resolve_for_anomaly(
+            lat, lon, when,
+            half_window_years=half_window_years,
+            event_buffer_days=event_buffer_days,
+            min_baseline_days=min_baseline_days,
+        )
+        if r.tmax_event_c is not None:
+            return AnomalyFetch(
+                tmax_event_c=r.tmax_event_c,
+                baseline=r.baseline,
+                station_id=r.station_id,
+                provenance=r.provenance,
+                note=r.note,
+            )
 
     # ── Tier 4: 20CRv3 (1806-1980) ───────────────────────────────
     try:
