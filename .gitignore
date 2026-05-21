@@ -21,6 +21,9 @@ data/cache/
 .cdsapirc
 .env
 
+# Geocoder cache (regenerable from build_geo_map.py)
+scripts/.geocode_cache.json
+
 # Reports / figures (generated)
 reports/figs/
 reports/results.json
