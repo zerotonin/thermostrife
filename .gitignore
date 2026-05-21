@@ -10,9 +10,10 @@ coverage.xml
 .pytest_cache/
 .ruff_cache/
 
-# Data interim / processed — only raw is committed
+# Data interim / processed / cache — only raw is committed
 data/interim/*
 data/processed/*
+data/cache/
 !data/interim/.gitkeep
 !data/processed/.gitkeep
 

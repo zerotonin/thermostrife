@@ -44,6 +44,8 @@ climate = [
     "xarray>=2024.1",
     "netCDF4>=1.6",
     "requests>=2.31",
+    "pyarrow>=14.0",
+    "geopy>=2.4",
 ]
 dev = [
     "pytest>=7.4",
@@ -81,3 +83,6 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+markers = [
+    "network: test hits an external service (meteostat, ERA5, …); cache is reused on rerun.",
+]
