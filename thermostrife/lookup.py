@@ -8,7 +8,7 @@
 # ║    2. Long-record observatories (HadCET, plus Paris/Berlin/      ║
 # ║       Brera/Vienna to come)                                      ║
 # ║    3. ERA5 grid cell via cdsapi (1940+)            [stub]        ║
-# ║    4. 20CRv3 reanalysis grid cell (1836+)          [stub]        ║
+# ║    4. 20CRv3 reanalysis grid cell (1806-1980)                    ║
 # ║                                                                  ║
 # ║  Each resolved row carries a temp_provenance flag so the         ║
 # ║  analysis can downweight low-tier or mean-vs-max resolutions.    ║
@@ -189,6 +189,27 @@ def resolve_event_anomaly(
             )
 
     # ── Tier 3: ERA5 (stub) ──────────────────────────────────────
-    # ── Tier 4: 20CRv3 (stub) ────────────────────────────────────
+
+    # ── Tier 4: 20CRv3 (1806-1980) ───────────────────────────────
+    try:
+        from .sources import twentycr_src
+    except ImportError:
+        twentycr_src = None  # type: ignore[assignment]
+
+    if twentycr_src is not None and twentycr_src.covers(when):
+        r = twentycr_src.resolve_for_anomaly(
+            lat, lon, when,
+            half_window_years=half_window_years,
+            event_buffer_days=event_buffer_days,
+            min_baseline_days=min_baseline_days,
+        )
+        if r.tmax_event_c is not None:
+            return AnomalyFetch(
+                tmax_event_c=r.tmax_event_c,
+                baseline=r.baseline,
+                station_id=r.station_id,
+                provenance=r.provenance,
+                note=r.note,
+            )
 
     return AnomalyFetch.empty(note="all available tiers returned no anomaly fetch")
