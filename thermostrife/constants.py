@@ -14,11 +14,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TypeAlias
+from typing import TYPE_CHECKING, TypeAlias
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 # ─────────────────────────────────────────────────────────────────
 #  Era boundaries  « match the dataset's five-era partition »
@@ -92,9 +95,12 @@ DATA_DIR: Path = REPO_ROOT / "data"
 RAW_DIR: Path = DATA_DIR / "raw"
 INTERIM_DIR: Path = DATA_DIR / "interim"
 PROCESSED_DIR: Path = DATA_DIR / "processed"
+CACHE_DIR: Path = DATA_DIR / "cache"
 REPORTS_DIR: Path = REPO_ROOT / "reports"
 
 CURATED_CSV: Path = RAW_DIR / "uprisings_temperature.csv"
+EVENT_GEO_CSV: Path = RAW_DIR / "event_geo.csv"
+STATION_MAP_CSV: Path = RAW_DIR / "station_map.csv"
 
 # ─────────────────────────────────────────────────────────────────
 #  Type aliases
@@ -131,7 +137,7 @@ def save_figure(
     fig: Figure,
     stem: str,
     output_dir: Path,
-    data_csv: "pd.DataFrame | None" = None,
+    data_csv: pd.DataFrame | None = None,
     dpi: int = FIGURE_DPI,
 ) -> None:
     """Export figure as SVG + PNG with optional CSV data companion.
@@ -149,15 +155,6 @@ def save_figure(
     fig.savefig(output_dir / f"{stem}.png", dpi=dpi)
     if data_csv is not None:
         data_csv.to_csv(output_dir / f"{stem}.csv", index=False)
-
-
-# Avoid a hard pandas import at module top: only needed when save_figure
-# is called with a DataFrame.  The string annotation above keeps mypy happy
-# without forcing pandas on every import.
-try:
-    import pandas as pd  # noqa: F401
-except ImportError:  # pragma: no cover
-    pd = None  # type: ignore[assignment]
 
 
 __all__ = [
@@ -178,8 +175,11 @@ __all__ = [
     "RAW_DIR",
     "INTERIM_DIR",
     "PROCESSED_DIR",
+    "CACHE_DIR",
     "REPORTS_DIR",
     "CURATED_CSV",
+    "EVENT_GEO_CSV",
+    "STATION_MAP_CSV",
     "PROVENANCE_TIERS",
     "ProvenanceTier",
     "save_figure",
