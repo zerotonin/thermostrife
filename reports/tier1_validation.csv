@@ -1,0 +1,14 @@
+event_id,date,manual_C,tier1_C,delta_C,station,provenance,note
+1871_paris_commune,1871-05-21,22.0,,,,unverifiable,all available tiers returned no value
+1916_easter_rising,1916-04-24,12.5,16.7,4.199999999999999,03969,tier1_ghcn,meteostat: 03969
+1919_chicago_red_summer,1919-07-27,35.0,,,,unverifiable,all available tiers returned no value
+1943_detroit_race_riot,1943-06-20,32.8,31.7,-1.0999999999999979,71538,tier1_ghcn,meteostat: 71538
+1965_watts_riots,1965-08-11,33.3,,,,unverifiable,all available tiers returned no value
+1967_detroit_riots,1967-07-23,32.2,30.6,-1.6000000000000014,71538,tier1_ghcn,meteostat: 71538
+1968_mlk_dc_riots,1968-04-04,21.0,20.6,-0.3999999999999986,74594,tier1_ghcn,meteostat: 74594
+1969_stonewall,1969-06-28,35.6,34.4,-1.2000000000000028,72503,tier1_ghcn,meteostat: 72503
+2014_euromaidan,2014-02-18,-1.0,8.0,9.0,33345,tier1_ghcn,meteostat: 33345
+2020_george_floyd_minneapolis,2020-05-26,27.0,26.1,-0.8999999999999986,KMIC0,tier1_ghcn,meteostat: KMIC0
+2021_capitol_storming,2021-01-06,4.0,6.7,2.7,72405,tier1_ghcn,meteostat: 72405
+2023_france_nahel_riots,2023-06-27,25.0,25.0,0.0,07156,tier1_ghcn,meteostat: 07156
+2024_new_caledonia_riots,2024-05-13,24.0,26.7,2.6999999999999993,91592,tier1_ghcn,meteostat: 91592
