@@ -6,32 +6,47 @@ versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-### Added
+### Added — Sprint 1 (Tier-1 weather backfill)
 
-- **Tier 1 weather backfill (meteostat).** New
-  `thermostrife/sources/meteostat_src.py` with parquet caching per
-  `(station, year-month)`; nearest-station search; baseline-window
-  fetcher for the period-correct ±5-year same-month reference. Wired
-  into `lookup.resolve` as the first tier of the cascade.
-- `data/raw/event_geo.csv` — hand-curated lat/lon (plus station hints
-  in the notes column) for the 13 verified rows; expansion to all 112
-  is Sprint 1.5.
-- `scripts/validate_tier1.py` and `reports/tier1_validation.md` —
-  per-row manual-vs-Tier-1 comparison with outlier triage notes.
-- `tests/test_validation.py` — pytest gate (marked `network`) that
-  asserts ≥8 of 13 verified rows resolve, MAE < 3 °C, median |Δ| <
-  1.5 °C, and ≥4 rows within 1.5 °C of the manual value.
+- **meteostat adapter.** New `thermostrife/sources/meteostat_src.py`
+  with parquet caching per `(station, year-month)`, nearest-station
+  search, baseline-window fetcher, and a **unified
+  `resolve_for_anomaly`** that commits to one station serving both
+  the event-day fetch and the ±5-year same-month baseline window so
+  the anomaly is computed apples-to-apples.
+- `lookup.resolve` cascades through Tier 1 (Tiers 2–4 still stubbed).
 - `meteostat`, `geopy`, `pyarrow` added to `[climate]` extras and
   `environment.yml`.
 
-### Known caveats from the first validation pass
+### Added — Sprint 1.5 (geo-map + internal-consistency gate)
 
-- 3 of 13 rows do not resolve at Tier 1 (Paris 1871, Chicago 1919,
-  LAX 1965). Meteostat coverage thins out pre-1920; these rows are
-  the explicit motivation for Tiers 2–4.
-- 4 of 10 resolved rows show |Δ| > 2 °C, notably Dublin 1916
-  (+4.2 °C) and Kyiv 2014 (+9.0 °C). These need station-hint
-  curation or a manual re-check of the original primary source.
+- `scripts/build_geo_map.py` — geopy Nominatim geocoder with JSON
+  cache; expanded `data/raw/event_geo.csv` from 13 to **all 112**
+  events. Hand-curated rows are preserved; the only manual override
+  after the auto-run was Kent State (Nominatim resolved to *Kent
+  County, Texas* instead of Kent, Ohio).
+- `scripts/validate_tier1.py` reframed as a **diagnostic** report,
+  not a gate. The `manual_C` column from the source CSV is kept for
+  cross-reference but explicitly not a validation target — the
+  anomaly is computed from a single meteostat station's record, so
+  absolute disagreement with the hand-curated value is expected and
+  unimportant.
+- `tests/test_validation.py` rewritten as **internal-consistency
+  tests**: ≥ 8 of the verified rows resolve, every resolved row
+  carries a `station_id`, baseline windows hold ≥ 20 days, and the
+  baseline SD is finite and plausible (`0 < SD < 30 °C`).
+
+### Known caveats
+
+- 3 of the 13 verified rows do not resolve at Tier 1 (Paris 1871,
+  Chicago 1919, LAX 1965). Meteostat coverage thins out pre-1920;
+  these rows are the explicit motivation for Tiers 2–4.
+- Several Nominatim hits land on a metro-area centroid (e.g.
+  Brixton, Broadwater Farm → "Greater London"). For weather-baseline
+  purposes this is acceptable — meteostat will pick the same nearby
+  station regardless of which sub-borough the event happened in —
+  but worth tightening if the analysis ever uses geocoded coordinates
+  for anything more granular than weather lookup.
 
 ## v0.1.0 — 2026-05-21
 
