@@ -1,0 +1,14 @@
+event_id,lat,lon,note
+1871_paris_commune,48.8566,2.3522,Paris city centre
+1916_easter_rising,53.3498,-6.2603,Dublin city centre (Phoenix Park station nearby)
+1919_chicago_red_summer,41.8500,-87.6500,Chicago Loop
+1943_detroit_race_riot,42.3314,-83.0458,Detroit downtown (DTW USW00094847)
+1965_watts_riots,33.9425,-118.4081,LAX area (USW00023174)
+1967_detroit_riots,42.3314,-83.0458,Detroit (DTW)
+1968_mlk_dc_riots,38.8951,-77.0364,DC mall area (DCA USW00013743)
+1969_stonewall,40.7831,-73.9712,Central Park NYC (USW00094728)
+2014_euromaidan,50.4501,30.5234,Kyiv city centre (Boryspil ~30 km)
+2020_george_floyd_minneapolis,44.9778,-93.2650,Minneapolis (MSP USW00014922)
+2021_capitol_storming,38.8899,-77.0091,US Capitol (DCA USW00013743)
+2023_france_nahel_riots,48.8924,2.2069,Nanterre (Paris-Le Bourget LFPB)
+2024_new_caledonia_riots,-22.2758,166.4580,Nouméa city centre (Magenta NWWW)
