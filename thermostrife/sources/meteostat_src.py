@@ -214,3 +214,119 @@ def fetch_baseline_window(
             return full, station_id
 
     return pd.DataFrame(columns=["tmax"]), ""
+
+
+# ─────────────────────────────────────────────────────────────────
+#  Unified resolver  « single station for event AND baseline »
+# ─────────────────────────────────────────────────────────────────
+
+
+@dataclass(frozen=True)
+class AnomalyFetch:
+    """Combined event-day + baseline-window result for one event.
+
+    By construction the same ``station_id`` produced both ``tmax_event_c``
+    and ``baseline``, so the anomaly ``tmax_event_c - baseline['tmax'].mean()``
+    is internally consistent (no apples-to-oranges station mixing).
+    """
+
+    tmax_event_c: float | None
+    baseline: pd.DataFrame
+    station_id: str
+    note: str = ""
+
+
+def resolve_for_anomaly(
+    lat: float,
+    lon: float,
+    when: date,
+    *,
+    half_window_years: int = 5,
+    event_buffer_days: int = 7,
+    min_baseline_days: int = 20,
+    station_hint: str | None = None,
+    radius_km: float = 50.0,
+    max_stations: int = 8,
+) -> AnomalyFetch:
+    """Pick one station that satisfies *both* event-day and baseline coverage.
+
+    Iterates nearest-first through candidate stations and accepts the first
+    that returns a non-null event-day Tmax AND at least
+    ``min_baseline_days`` daily Tmax values across the ±N-year same-month
+    window.  This is the resolver the case-crossover analysis should call —
+    it guarantees the anomaly is computed from a single station's record.
+
+    Returns:
+        ``AnomalyFetch`` with ``tmax_event_c is None`` if no candidate
+        station satisfies both criteria.
+    """
+    candidates: list[str]
+    if station_hint:
+        candidates = [station_hint]
+    else:
+        hits = find_nearest_stations(lat, lon, radius_km=radius_km, limit=max_stations)
+        candidates = [h.station_id for h in hits]
+        if not candidates:
+            return AnomalyFetch(
+                tmax_event_c=None,
+                baseline=pd.DataFrame(columns=["tmax"]),
+                station_id="",
+                note=f"no station within {radius_km:.0f} km",
+            )
+
+    target_month = when.month
+    years = range(when.year - half_window_years, when.year + half_window_years + 1)
+    buffer = timedelta(days=event_buffer_days)
+    event_lo, event_hi = when - buffer, when + buffer
+
+    last_note = "no candidate satisfied both event-day and baseline coverage"
+    for station_id in candidates:
+        # Event-day Tmax for this candidate
+        ev_df = _load_or_fetch_month(station_id, when.year, target_month)
+        if ev_df.empty or "tmax" not in ev_df.columns:
+            continue
+        ev_dates = pd.to_datetime(ev_df.index).date
+        mask = ev_dates == when
+        if not mask.any():
+            continue
+        tmax_event = ev_df.loc[mask, "tmax"].iloc[0]
+        if pd.isna(tmax_event):
+            continue
+
+        # Baseline window for the same station
+        frames = []
+        for year in years:
+            df = _load_or_fetch_month(station_id, year, target_month)
+            if df.empty or "tmax" not in df.columns:
+                continue
+            df = df[df["tmax"].notna()]
+            if df.empty:
+                continue
+            df_dates = pd.to_datetime(df.index).date
+            if year == when.year:
+                df = df.loc[(df_dates < event_lo) | (df_dates > event_hi)]
+            if not df.empty:
+                frames.append(df[["tmax"]])
+        if not frames:
+            last_note = f"station {station_id} had event day but no baseline"
+            continue
+        baseline = pd.concat(frames)
+        if len(baseline) < min_baseline_days:
+            last_note = (
+                f"station {station_id} baseline only {len(baseline)} days "
+                f"(< {min_baseline_days})"
+            )
+            continue
+        return AnomalyFetch(
+            tmax_event_c=float(tmax_event),
+            baseline=baseline,
+            station_id=station_id,
+            note=f"meteostat: {station_id}, n_baseline={len(baseline)}",
+        )
+
+    return AnomalyFetch(
+        tmax_event_c=None,
+        baseline=pd.DataFrame(columns=["tmax"]),
+        station_id="",
+        note=last_note,
+    )
