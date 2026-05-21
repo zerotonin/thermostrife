@@ -69,7 +69,7 @@ event_id,date,manual_C,event_C,baseline_mean_C,baseline_std_C,baseline_n,anomaly
 1980_stpauls_riot,1980-04-02,,12.0,11.956012658227849,3.523543750057521,316.0,0.04398734177215147,03740,tier1_ghcn,"meteostat: 03740, n_baseline=316"
 1981_brixton_riot,1981-04-10,,22.0,12.813418530351436,3.5085991626126654,313.0,9.186581469648564,03772,tier1_ghcn,"meteostat: 03772, n_baseline=313"
 1981_toxteth_riots,1981-07-03,,17.0,20.1521472392638,3.9442474165383286,326.0,-3.152147239263801,03334,tier1_ghcn,"meteostat: 03334, n_baseline=326"
-1982_hama_massacre,1982-02-02,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1982_hama_massacre,1982-02-02,,11.466699218750023,13.711442403590446,3.6105024586817818,188.0,-2.2447431848404236,ERA5_+35.25_+36.75,tier3_era5,"ERA5 cell (35.25, 36.75); baseline n=188 same-month daily Tmax values"
 1985_broadwater_farm,1985-10-06,,19.6,15.16552795031056,2.7276976473947108,322.0,4.434472049689441,03772,tier1_ghcn,"meteostat: 03772, n_baseline=322"
 1985_handsworth_riots,1985-09-09,,19.3,17.691525423728812,2.8676525833226645,295.0,1.6084745762711883,03534,tier1_ghcn,"meteostat: 03534, n_baseline=295"
 1989_romanian_revolution,1989-12-16,,15.4,3.510429447852761,4.272777709344194,326.0,11.889570552147239,15420,tier1_ghcn,"meteostat: 15420, n_baseline=326"
@@ -77,9 +77,9 @@ event_id,date,manual_C,event_C,baseline_mean_C,baseline_std_C,baseline_n,anomaly
 1991_crown_heights,1991-08-19,,26.7,28.484355828220856,3.4469385367414977,326.0,-1.784355828220857,72503,tier1_ghcn,"meteostat: 72503, n_baseline=326"
 1992_algiers_airport,1992-08-26,,35.5,32.82439024390244,2.9933488339549386,328.0,2.6756097560975576,60390,tier1_ghcn,"meteostat: 60390, n_baseline=328"
 1992_la_riots,1992-04-29,,23.3,20.36697819314642,3.609990464343081,321.0,2.9330218068535814,72295,tier1_ghcn,"meteostat: 72295, n_baseline=321"
-1993_mogadishu_black_hawk,1993-10-03,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1994_rwandan_genocide,1994-04-06,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-1997_albania_unrest,1997-03-01,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+1993_mogadishu_black_hawk,1993-10-03,,27.085107421875023,28.256453573451683,0.7169618026236401,331.0,-1.1713461515766603,ERA5_+2.00_+45.25,tier3_era5,"ERA5 cell (2.00, 45.25); baseline n=331 same-month daily Tmax values"
+1994_rwandan_genocide,1994-04-06,,21.674707031250023,24.275130465053252,1.411343597322808,317.0,-2.600423433803229,ERA5_-2.00_+30.00,tier3_era5,"ERA5 cell (-2.00, 30.00); baseline n=317 same-month daily Tmax values"
+1997_albania_unrest,1997-03-01,,13.990869140625023,14.212235770927197,3.60484172931186,333.0,-0.22136663030217463,ERA5_+41.25_+19.75,tier3_era5,"ERA5 cell (41.25, 19.75); baseline n=333 same-month daily Tmax values"
 1998_indonesia_riots,1998-05-13,,33.8,32.22421052631579,1.0820307729011405,95.0,1.5757894736842104,96745,tier1_ghcn,"meteostat: 96745, n_baseline=95"
 2001_cincinnati_riots,2001-04-09,,28.9,19.02509505703422,5.359786074624512,263.0,9.874904942965777,KLUK0,tier1_ghcn,"meteostat: KLUK0, n_baseline=263"
 2005_paris_banlieue_riots,2005-10-27,,23.3,16.699999999999996,3.5383612025908264,148.0,6.600000000000005,07156,tier1_ghcn,"meteostat: 07156, n_baseline=148"
@@ -87,12 +87,12 @@ event_id,date,manual_C,event_C,baseline_mean_C,baseline_std_C,baseline_n,anomaly
 2009_iran_green_movement,2009-06-13,,33.0,34.95407166123778,2.6971313800262666,307.0,-1.9540716612377835,40754,tier1_ghcn,"meteostat: 40754, n_baseline=307"
 2010_tunisian_revolution,2010-12-17,,13.0,17.741528239202662,2.785672209126531,301.0,-4.741528239202662,60715,tier1_ghcn,"meteostat: 60715, n_baseline=301"
 2011_bahrain_pearl,2011-02-14,,18.0,22.486159169550174,3.2508677456299395,289.0,-4.486159169550174,41150,tier1_ghcn,"meteostat: 41150, n_baseline=289"
-2011_egyptian_revolution,2011-01-25,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+2011_egyptian_revolution,2011-01-25,,18.950097656250023,19.718975624761104,2.8764251739472946,327.0,-0.7688779685110809,ERA5_+30.00_+31.25,tier3_era5,"ERA5 cell (30.00, 31.25); baseline n=327 same-month daily Tmax values"
 2011_england_riots,2011-08-06,,19.0,22.059360730593607,2.8656685904329477,219.0,-3.059360730593607,EGLC0,tier1_ghcn,"meteostat: EGLC0, n_baseline=219"
 2011_libyan_civil_war,2011-02-15,,16.2,17.689655172413794,3.5688599887345545,116.0,-1.4896551724137943,62053,tier1_ghcn,"meteostat: 62053, n_baseline=116"
 2011_occupy_wall_street,2011-11-15,,18.3,12.739682539682539,4.720653215168308,315.0,5.560317460317462,72503,tier1_ghcn,"meteostat: 72503, n_baseline=315"
-2011_syrian_uprising,2011-03-15,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
-2011_yemeni_uprising,2011-01-27,,,,,,,,unverifiable,all available tiers returned no anomaly fetch
+2011_syrian_uprising,2011-03-15,,18.941308593750023,19.384738365126555,4.895551630260023,326.0,-0.4434297713765325,ERA5_+32.50_+36.00,tier3_era5,"ERA5 cell (32.50, 36.00); baseline n=326 same-month daily Tmax values"
+2011_yemeni_uprising,2011-01-27,,23.672509765625023,21.748581461341207,1.5024339107658777,329.0,1.923928304283816,ERA5_+15.25_+44.25,tier3_era5,"ERA5 cell (15.25, 44.25); baseline n=329 same-month daily Tmax values"
 2014_euromaidan,2014-02-18,-1.0,8.0,0.2038327526132404,5.402384148634103,287.0,7.79616724738676,33345,tier1_ghcn,"meteostat: 33345, n_baseline=287"
 2014_ferguson_first,2014-08-09,,27.2,30.701857585139322,3.217218275633652,323.0,-3.501857585139323,KCPS0,tier1_ghcn,"meteostat: KCPS0, n_baseline=323"
 2014_ferguson_grand_jury,2014-11-24,,13.9,13.22857142857143,6.222175476421125,308.0,0.6714285714285708,KCPS0,tier1_ghcn,"meteostat: KCPS0, n_baseline=308"
