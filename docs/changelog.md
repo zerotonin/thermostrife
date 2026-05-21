@@ -6,6 +6,32 @@ versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added — Sprint 3 (Tier-3 ERA5 reanalysis)
+
+- **ERA5 adapter.** New `thermostrife/sources/era5_src.py` fetches
+  ECMWF ERA5 single-level 2-m air temperature (0.25° global grid)
+  via the Copernicus CDS API. Hourly natively; daily Tmax is
+  derived per-day from the 24 hourly values. One CDS request per
+  event bundles the full ±5-year same-month baseline window at the
+  event's grid cell so the request fits the CDS fast queue
+  (~8 000 hourly values, a few MB). Per-(cell, year-month) parquet
+  cache.
+- **Coverage** deliberately limited to **1981+**, even though ERA5
+  itself reaches 1940. The 1940-1980 window is owned by 20CRv3
+  (Sprint 4), which has substantial observational ingest in that
+  era; ERA5's comparative value-add is its tighter 0.25° grid in
+  the satellite-era post-1980. This also keeps CDS API traffic
+  minimal (one request per still-unresolved post-1980 event).
+- **Cascade Tier 3** wired into `lookup.resolve_event_anomaly`
+  between Tier 2 (HadCET) and Tier 4 (20CRv3). Post-1980 events
+  that miss Tier 1 / Tier 2 land here; pre-1981 events fall
+  through to Tier 4.
+- Requires a `~/.cdsapirc` with a Copernicus API key; the file is
+  gitignored and the adapter never inlines the key into code,
+  cache, or report artefacts. Users also need to accept the
+  ERA5 licence once at
+  <https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels>.
+
 ### Added — Sprint 4 (Tier-4 20CRv3 reanalysis)
 
 - **20CRv3 adapter.** New `thermostrife/sources/twentycr_src.py`
