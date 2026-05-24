@@ -22,6 +22,7 @@ occasionally resolves to a same-name town in another country
 
 from __future__ import annotations
 
+import argparse
 import json
 import time
 from pathlib import Path
@@ -31,7 +32,12 @@ from geopy.exc import GeocoderTimedOut
 from geopy.geocoders import Nominatim
 from tqdm import tqdm
 
-from thermostrife.constants import CURATED_CSV, EVENT_GEO_CSV
+from thermostrife.constants import (
+    CURATED_CSV,
+    EVENT_GEO_CSV,
+    PEACEFUL_CSV,
+    PEACEFUL_GEO_CSV,
+)
 
 CACHE_PATH = Path(__file__).resolve().parent / ".geocode_cache.json"
 USER_AGENT = "thermostrife-build-geo-map/0.1 (bart.geurten@otago.ac.nz)"
@@ -71,20 +77,41 @@ def geocode(geolocator: Nominatim, city: str, country: str, cache: dict) -> dict
     return cache[key]
 
 
-def main() -> int:
-    curated = pd.read_csv(CURATED_CSV)
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="build_geo_map",
+        description="Expand a geo CSV to cover every event from a curated CSV.",
+    )
+    parser.add_argument(
+        "--panel", choices=("violent", "peaceful"), default="violent",
+        help="Which panel to geocode (default: violent uprisings).",
+    )
+    parser.add_argument("--input", type=Path, default=None,
+                        help="Override input curated CSV.")
+    parser.add_argument("--output", type=Path, default=None,
+                        help="Override output geo CSV.")
+    args = parser.parse_args(argv)
+
+    if args.panel == "peaceful":
+        input_csv = args.input or PEACEFUL_CSV
+        output_csv = args.output or PEACEFUL_GEO_CSV
+    else:
+        input_csv = args.input or CURATED_CSV
+        output_csv = args.output or EVENT_GEO_CSV
+
+    curated = pd.read_csv(input_csv)
     existing = (
-        pd.read_csv(EVENT_GEO_CSV)
-        if EVENT_GEO_CSV.exists()
+        pd.read_csv(output_csv)
+        if output_csv.exists()
         else pd.DataFrame(columns=["event_id", "lat", "lon", "note"])
     )
     have = set(existing["event_id"])
     missing = curated[~curated["event_id"].isin(have)]
     if missing.empty:
-        print(f"[done] event_geo.csv already covers all {len(curated)} events.")
+        print(f"[done] {output_csv.name} already covers all {len(curated)} events.")
         return 0
 
-    print(f"[start] geocoding {len(missing)} new events via Nominatim …")
+    print(f"[start] geocoding {len(missing)} new events from {input_csv.name} via Nominatim …")
     cache = load_cache()
     geolocator = Nominatim(user_agent=USER_AGENT)
 
@@ -109,11 +136,11 @@ def main() -> int:
 
     out = pd.concat([existing, pd.DataFrame(new_rows)], ignore_index=True)
     out = out.drop_duplicates(subset="event_id", keep="first").sort_values("event_id")
-    out.to_csv(EVENT_GEO_CSV, index=False)
-    print(f"[done] wrote {len(out)} rows to {EVENT_GEO_CSV}")
+    out.to_csv(output_csv, index=False)
+    print(f"[done] wrote {len(out)} rows to {output_csv}")
     if bad:
         print(f"[warn] {len(bad)} events failed to geocode: {bad}")
-        print(f"       hand-curate these in {EVENT_GEO_CSV} and re-run.")
+        print(f"       hand-curate these in {output_csv} and re-run.")
     return 0
 
 
