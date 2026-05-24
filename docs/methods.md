@@ -130,6 +130,62 @@ effect to about 0.85 °C.
 - **One-sided tests are pre-registered.** If the observed mean anomaly
   is negative, we report it descriptively but do not flip the test.
 
+## 7b — Data-coverage limitations (intrinsic missingness)
+
+The tiered cascade (`thermostrife.lookup.resolve_event_anomaly`)
+resolves **104 / 112** events. The 8 events that remain
+`unverifiable` after Tiers 1–4 are all pre-1806:
+
+| Event | Date | Why unresolved |
+|-------|------|----------------|
+| Storming of the Bastille | 1789-07-14 | pre-1806; outside 20CRv3 |
+| Women's March on Versailles | 1789-10-05 | pre-1806; outside 20CRv3 |
+| Bois Caïman / Haitian Revolt | 1791-08-22 | pre-1806; tropical, no station record |
+| Storming of the Tuileries | 1792-08-10 | pre-1806; outside 20CRv3 |
+| September Massacres | 1792-09-02 | pre-1806; outside 20CRv3 |
+| Reign of Terror peak | 1794-06-10 | pre-1806; outside 20CRv3 |
+| Whiskey Rebellion (Bower Hill) | 1794-07-16 | pre-1806; no Pittsburgh record |
+| Gabriel's Rebellion | 1800-08-30 | pre-1806; no Richmond record |
+
+Sub-monthly historical climate reconstruction for these dates does
+exist in the historical-climatology literature but is not currently
+in a form suitable for automated pipelines:
+
+- **Rousseau, D. (2009)** "Les températures mensuelles en région
+  parisienne de 1676 à 2008." *La Météorologie* **67**, 43–55.
+  doi:10.4267/2042/28828. — Monthly Paris series back to 1676; the
+  longest published Paris instrumental compilation, but at monthly
+  resolution. Daily values exist in unpublished Météo-France
+  archives.
+- **Yiou, P. *et al.* (2014)** "Ensemble meteorological
+  reconstruction using circulation analogues of 1781–1785."
+  *Climate of the Past* **10**, 797–809.
+  doi:10.5194/cp-10-797-2014. — Daily reconstruction of Paris-area
+  weather including temperature, but window ends in 1785 (before
+  the Bastille).
+- **Cornes, R. C. *et al.* (2013)** "Estimates of the NAO back to
+  1692 using a Paris-London westerly index." *Int. J. Climatol.*
+  **33**, 228–248. doi:10.1002/joc.3416. — Daily Paris
+  *pressure* back to 1692 (not temperature).
+- **Slonosky, V. C. (2002)** "Wet winters, dry summers? Three
+  centuries of precipitation data from Paris." *GRL* **29**(19),
+  1895. — Daily Paris *precipitation* back to 1688 (not
+  temperature).
+
+This missingness is **not informative for the H1/H2 hypotheses**.
+The events are missing because of pre-instrumental gaps in the
+global daily temperature record, not because of any property of the
+events themselves. The 8 events are diverse in geography (Paris,
+Haiti, Pittsburgh, Richmond) and season (June–October) and would
+not bias the heat-aggression coefficient in any one direction if
+included.
+
+Future work: a Paris Observatory adapter targeting the Rousseau
+2009 daily archive (likely requiring direct contact with
+Météo-France) would unblock the five French Revolution events
+(Bastille, Versailles, Tuileries, September Massacres, Reign of
+Terror), bringing coverage to ~109 / 112.
+
 ## 8 — References
 
 - Lee, S. *et al.* (2023). Assault deaths and ambient temperature in
