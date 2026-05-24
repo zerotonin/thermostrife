@@ -78,6 +78,26 @@ SEMANTIC_COLOURS: dict[str, str] = {
     "anti_heat": WONG["reddish_purple"], # counter-examples (winter events)
 }
 
+#: Source-tier colours, applied per-event in scatter / strip plots.
+#: Ordered by historical reach: green (modern stations) → purple (deep
+#: historical reanalysis).
+TIER_COLOURS: dict[str, str] = {
+    "tier1_ghcn":        WONG["bluish_green"],
+    "tier2_hadcet_max":  WONG["sky_blue"],
+    "tier2_hadcet_mean": WONG["sky_blue"],
+    "tier3_era5":        WONG["orange"],
+    "tier4_20crv3":      WONG["reddish_purple"],
+}
+
+#: Human-readable labels for legends, keyed by provenance code.
+TIER_LABELS: dict[str, str] = {
+    "tier1_ghcn":        "Tier 1 — GHCN / meteostat",
+    "tier2_hadcet_max":  "Tier 2 — HadCET (Tmax)",
+    "tier2_hadcet_mean": "Tier 2 — HadCET (mean)",
+    "tier3_era5":        "Tier 3 — ERA5 reanalysis",
+    "tier4_20crv3":      "Tier 4 — 20CRv3 reanalysis",
+}
+
 # ─────────────────────────────────────────────────────────────────
 #  Figure defaults
 # ─────────────────────────────────────────────────────────────────
@@ -167,6 +187,8 @@ __all__ = [
     "RNG_SEED",
     "WONG",
     "SEMANTIC_COLOURS",
+    "TIER_COLOURS",
+    "TIER_LABELS",
     "FIGURE_DPI",
     "FIGURE_SIZE_SINGLE",
     "FIGURE_SIZE_DOUBLE",
