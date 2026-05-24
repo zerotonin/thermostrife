@@ -6,6 +6,35 @@ versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added — Sprint 6 (publication figures for Jess's deck)
+
+- **`thermostrife/viz.py`** — three figure functions, each triple-output
+  (SVG with editable text + PNG @ 200 dpi + CSV data companion) so
+  they can be opened in Inkscape for slide-deck tweaks:
+
+  - `plot_anomaly_raincloud` — half-violin + boxplot + jittered strip
+    of per-event anomalies, points coloured by source tier, headline
+    H2 result annotated in the lower right.
+  - `plot_null_density` — KDE of the permutation null with the
+    observed statistic marked; visual proof of H2.
+  - `plot_anomaly_by_year` — anomaly vs event year with an 11-event
+    rolling mean overlay; era-stratification visualiser.
+
+- **`TIER_COLOURS` / `TIER_LABELS`** in `constants.py` so every figure
+  uses the same Wong-palette mapping per cascade tier (green → blue
+  → orange → reddish-purple as you go further back in time).
+
+- **`scripts/run_inference.py`** now generates the three figures
+  alongside `reports/inference_results.{md,json}` and embeds them in
+  the markdown report.
+
+- **`tests/test_viz.py`** — 5 smoke tests: each function writes the
+  expected triple, raises on empty input where appropriate, and the
+  small-null-draws guard fires.
+
+- **`reports/figs/`** is now tracked in git: the figures are
+  publishable artefacts, not ephemeral build output.
+
 ### Added — Sprint 5 (case-crossover inference engine)
 
 - **Case-crossover conditional logit**
