@@ -6,6 +6,96 @@ versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added — Sprint 8 (BH-FDR + peaceful-crowd parallel control)
+
+**Headline result.** The peaceful-crowd parallel control shows the
+**opposite** sign from violent uprisings, definitively ruling out
+Field 1992 outdoor-opportunity as the explanation for the H2
+heat-aggression signal:
+
+| Statistic | Violent uprisings (n=104) | Peaceful gatherings (n=41) |
+|---|---:|---:|
+| H2 OR per +1 °C | **1.089** (CI 1.029–1.152) | **0.961** (CI 0.884–1.044) |
+| H2 one-sided p | 0.0016 | 0.83 |
+| Permutation Δ (°C) | +1.053 | −0.613 |
+| σ-rescaled mean z | +0.258 | −0.164 |
+| Fraction positive | 57.7 % | 43.9 % |
+
+If outdoor-opportunity were driving the H2 signal, peaceful mass
+gatherings should ride the same +°C bias. They don't — they sit
+slightly *cooler* than baseline (not significantly, but the point
+estimate is on the opposite side of zero). The heat signal is
+specific to violence.
+
+#### Added
+
+- **`thermostrife.inference.benjamini_hochberg`** — step-up FDR
+  procedure returning per-test BH-adjusted q-values, Bonferroni-
+  adjusted p-values, and per-test reject flags. With our actual
+  5-test battery, BH rejects 4/5 (rescues H3 at FDR = 0.05) while
+  Bonferroni rejects 3/5. **H2 conditional logit clears every
+  correction method**; the choice only matters for the auxiliary
+  tests.
+- Multiple-comparisons table now embedded in
+  `reports/inference_results.md` (raw + BH-adjusted q + Bonferroni
+  alongside `BH?` / `Bonf?` flags).
+- `docs/methods.md § 5` rewritten to explain BH-vs-Bonferroni dual
+  reporting and why BH is preferred for our correlated battery.
+- **`data/raw/peaceful_gatherings.csv`** — 41 hand-curated large
+  peaceful outdoor gatherings 1851–2024 (royal ceremonies,
+  funerals, protest marches, festivals, civic ceremonies,
+  exhibitions) as the parallel-control panel pre-registered in
+  `methods.md § 3b`.
+- **`data/raw/peaceful_geo.csv`** — geocoded via `build_geo_map.py
+  --panel peaceful`.
+- **`scripts/run_inference.py --panel {violent,peaceful}`** —
+  parameterised; writes `reports/inference_results_peaceful.{md,
+  json}` and `reports/figs_peaceful/` for the peaceful panel.
+- **`scripts/compare_panels.py`** — side-by-side comparison: emits
+  `reports/peaceful_vs_violent.md` with the dual table above plus
+  `reports/figs/peaceful_vs_violent.{svg,png,csv}` as a two-panel
+  raincloud.
+- **`scripts/build_geo_map.py --panel {violent,peaceful}`** —
+  parameterised geocoder.
+- **`PEACEFUL_CSV` / `PEACEFUL_GEO_CSV`** path constants in
+  `thermostrife/constants.py`.
+- **Headless-safe `MPLBACKEND=Agg`** force-pinned at the top of
+  `thermostrife/viz.py` so any caller (including the conda env
+  that ships PyQt) gets the non-interactive backend.
+- 4 new BH unit tests in `tests/test_inference.py` cover the
+  known-battery numbers, empty family, all-pass and all-fail
+  cases.
+
+### Added — Sprint 7 (H3 within-event temporal contrast)
+
+- **`thermostrife.lookup.fetch_same_source_day(provenance, lat, lon, when, station_id)`**
+  dispatches to the right adapter (meteostat / HadCET / ERA5 / 20CRv3)
+  by provenance code, threading ``station_hint`` through to Tier 1 so
+  surrounding-day queries hit the *same* station the cascade picked
+  for the event day.
+- **`thermostrife.inference.h3_within_event_contrast`** implements the
+  pre-registered H3 test from `docs/methods.md` § 3d. For each event,
+  fetches Tmax on day t±1 and t±7 via the same source, converts to
+  anomaly using the existing baseline mean, then takes
+  ``mean({t, t-1}) − mean({t-7, t+7})``. Aggregated across events with
+  a one-sided Wilcoxon signed-rank against ``H1: median > 0``.
+- **`scripts/run_inference.py`** now reports H3 alongside H1 / H2 /
+  σ-rescaled and embeds it in `reports/inference_results.md`.
+- **First H3 result on 99 / 104 events** (5 events dropped because a
+  surrounding-day fetch returned None):
+  - Mean diff: **+0.77 °C** (95 % CI -0.00 – +1.57)
+  - One-sided Wilcoxon p = **0.037**
+  - Direction supports "hot day triggers" over "hot week" but does not
+    survive Bonferroni (0.05 / 8 = 0.00625) — expected given daily
+    weather autocorrelation within a week and one diff per event vs
+    H2's hundreds of baseline days.
+- 3 new `tests/test_inference.py` cases for H3 cover the
+  strong-concentration / flat-profile / missing-day skip paths via a
+  programmable fake fetcher (no network).
+- Guard added to `h3_within_event_contrast` for the all-diffs-zero
+  case where `scipy.stats.wilcoxon` raises rather than returning a
+  meaningful p.
+
 ### Added — Sprint 6 (publication figures for Jess's deck)
 
 - **`thermostrife/viz.py`** — three figure functions, each triple-output
