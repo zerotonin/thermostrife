@@ -34,6 +34,7 @@ import matplotlib  # noqa: E402
 
 matplotlib.use("Agg", force=True)
 
+import matplotlib as mpl  # noqa: E402
 import matplotlib.patches as mpatches  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
@@ -212,6 +213,225 @@ def plot_null_density(
         fig, stem, output_dir,
         data_csv=pd.DataFrame({"null_draw_C": null_draws}),
     )
+    plt.close(fig)
+    return output_dir / f"{stem}.png"
+
+
+# ─────────────────────────────────────────────────────────────────
+#  Warming-stripes timeline with event markers (Hawkins 2018 idiom)
+# ─────────────────────────────────────────────────────────────────
+
+
+def plot_warming_stripes_timeline(
+    annual_temp: pd.Series,
+    panels: dict[str, pd.DataFrame],
+    output_dir: Path,
+    stem: str = "warming_stripes_timeline",
+    cmap_name: str = "RdBu_r",
+    stripe_clip_sigma: float = 2.6,
+) -> Path:
+    """Hawkins-style annual warming stripes + event markers per panel.
+
+    Background: one stripe per year coloured by that year's deviation
+    from the long-term mean of ``annual_temp`` (a Series indexed by
+    year).  Foreground: a row per panel with one marker per event,
+    coloured by the event's per-event anomaly.
+    """
+    if annual_temp.empty:
+        raise ValueError("annual_temp is empty; no background to draw")
+    if not panels:
+        raise ValueError("panels dict is empty")
+
+    years = annual_temp.index.to_numpy()
+    deviations = (annual_temp - annual_temp.mean()).to_numpy()
+    sd = float(np.std(deviations, ddof=1))
+    vmax = stripe_clip_sigma * sd if sd > 0 else 1.0
+    norm = mpl.colors.Normalize(vmin=-vmax, vmax=vmax)
+    cmap = mpl.cm.get_cmap(cmap_name)
+
+    n_panels = len(panels)
+    fig = plt.figure(figsize=(FIGURE_SIZE_DOUBLE[0], 1.6 + 0.9 * n_panels))
+    gs = fig.add_gridspec(
+        n_panels + 1, 1,
+        height_ratios=[1.2, *([1.0] * n_panels)],
+        hspace=0.18,
+    )
+
+    ax_bg = fig.add_subplot(gs[0])
+    for y, d in zip(years, deviations, strict=False):
+        ax_bg.axvspan(y - 0.5, y + 0.5, facecolor=cmap(norm(d)), edgecolor="none")
+    ax_bg.set_xlim(years.min() - 0.5, years.max() + 0.5)
+    ax_bg.set_yticks([])
+    ax_bg.set_xticks([])
+    ax_bg.set_title(
+        f"HadCET annual mean deviation from {annual_temp.mean():.2f} °C, "
+        f"{int(years.min())}–{int(years.max())}",
+        fontsize=9,
+    )
+
+    all_anom = np.concatenate([df["anomaly_C"].to_numpy() for df in panels.values()])
+    anom_clip = max(1.0, float(np.nanpercentile(np.abs(all_anom), 95)))
+    event_norm = mpl.colors.Normalize(vmin=-anom_clip, vmax=anom_clip)
+    event_cmap = mpl.cm.get_cmap("RdBu_r")
+
+    for i, (label, df) in enumerate(panels.items(), start=1):
+        ax = fig.add_subplot(gs[i], sharex=ax_bg)
+        sub = df.dropna(subset=["year", "anomaly_C"])
+        for y, d in zip(years, deviations, strict=False):
+            ax.axvspan(y - 0.5, y + 0.5, facecolor=cmap(norm(d)),
+                       edgecolor="none", alpha=0.22)
+        ax.scatter(
+            sub["year"], np.zeros(len(sub)),
+            c=[event_cmap(event_norm(a)) for a in sub["anomaly_C"]],
+            s=44, edgecolor="black", linewidth=0.4, zorder=3,
+        )
+        ax.set_ylim(-0.45, 0.45)
+        ax.set_yticks([])
+        ax.set_ylabel(f"{label}\n(n={len(sub)})", rotation=0,
+                      ha="right", va="center", fontsize=8.5)
+        if i < n_panels:
+            ax.set_xticks([])
+        else:
+            ax.set_xlabel("Year")
+
+    cbar_ax = fig.add_axes([0.92, 0.16, 0.014, 0.62])
+    sm = mpl.cm.ScalarMappable(norm=event_norm, cmap=event_cmap)
+    sm.set_array([])
+    cb = fig.colorbar(sm, cax=cbar_ax, extend="both")
+    cb.set_label("Event-day anomaly\nvs local same-month baseline (°C)",
+                 fontsize=8.5)
+    cb.ax.tick_params(labelsize=7.5)
+
+    combined = pd.concat(
+        [df.assign(panel=label) for label, df in panels.items()],
+        ignore_index=True,
+    )
+    save_figure(fig, stem, output_dir, data_csv=combined)
+    plt.close(fig)
+    return output_dir / f"{stem}.png"
+
+
+# ─────────────────────────────────────────────────────────────────
+#  Superposed-epoch composite (heliophysics idiom)
+# ─────────────────────────────────────────────────────────────────
+
+
+def plot_superposed_epoch(
+    profiles: dict[str, pd.DataFrame],
+    output_dir: Path,
+    stem: str = "superposed_epoch",
+    panel_colours: dict | None = None,
+    ci_level: float = 0.95,
+) -> Path:
+    """Superposed-epoch overlay: mean anomaly vs offset_days per panel.
+
+    Each panel's DataFrame has columns ``event_id``, ``offset_days``,
+    ``anomaly_C``.  Bootstrap CI per offset; flat profile near zero
+    = null; bump centred on offset 0 = heat-aggression signature.
+    """
+    if not profiles:
+        raise ValueError("profiles dict is empty")
+    if panel_colours is None:
+        panel_colours = {
+            "Violent uprisings": SEMANTIC_COLOURS["event"],
+            "Peaceful gatherings": SEMANTIC_COLOURS["control"],
+        }
+
+    fig, ax = plt.subplots(figsize=FIGURE_SIZE_SINGLE)
+    rng = np.random.default_rng(20260525)
+
+    for label, df in profiles.items():
+        if df.empty:
+            continue
+        col = panel_colours.get(label, SEMANTIC_COLOURS["null"])
+        offsets = sorted(df["offset_days"].unique())
+        means, ci_lo, ci_hi, ns = [], [], [], []
+        for off in offsets:
+            vals = df.loc[df["offset_days"] == off, "anomaly_C"].dropna().to_numpy()
+            if len(vals) < 3:
+                means.append(np.nan)
+                ci_lo.append(np.nan)
+                ci_hi.append(np.nan)
+                ns.append(len(vals))
+                continue
+            means.append(float(vals.mean()))
+            ns.append(len(vals))
+            boot = rng.choice(vals, size=(2000, len(vals)), replace=True).mean(axis=1)
+            lo, hi = np.quantile(boot, [(1 - ci_level) / 2, 0.5 + ci_level / 2])
+            ci_lo.append(float(lo))
+            ci_hi.append(float(hi))
+        ax.plot(offsets, means, color=col, linewidth=2.0,
+                marker="o", markersize=5,
+                label=f"{label} (n={int(max(ns))})")
+        ax.fill_between(offsets, ci_lo, ci_hi, color=col, alpha=0.18,
+                        linewidth=0)
+
+    ax.axhline(0, color="black", linestyle="--", linewidth=0.8, alpha=0.55)
+    ax.axvline(0, color="black", linestyle=":", linewidth=0.8, alpha=0.55)
+    ax.set_xlabel("Days from event (t = 0)")
+    ax.set_ylabel("Mean anomaly vs local same-month baseline (°C)")
+    ax.set_title("Superposed-epoch composite — concentration of warm anomaly on event day")
+    ax.legend(loc="upper left", fontsize=8.5, frameon=True, framealpha=0.92)
+    fig.tight_layout()
+
+    combined = pd.concat(
+        [df.assign(panel=label) for label, df in profiles.items()],
+        ignore_index=True,
+    )
+    save_figure(fig, stem, output_dir, data_csv=combined)
+    plt.close(fig)
+    return output_dir / f"{stem}.png"
+
+
+# ─────────────────────────────────────────────────────────────────
+#  Forest plot (Hsiang/Burke/Miguel idiom)
+# ─────────────────────────────────────────────────────────────────
+
+
+def plot_forest_h2(
+    rows: list[dict],
+    output_dir: Path,
+    stem: str = "forest_h2",
+    ref_x: float = 1.0,
+) -> Path:
+    """Forest plot of H2 OR-per-+1 °C estimates with 95 % CI whiskers.
+
+    ``rows`` is a list of dicts with keys ``label``, ``or``, ``ci_low``,
+    ``ci_high``, optional ``colour``, optional ``n``.  Plotted bottom-up.
+    """
+    if not rows:
+        raise ValueError("rows empty")
+    n = len(rows)
+    fig, ax = plt.subplots(figsize=(FIGURE_SIZE_SINGLE[0], 0.55 + 0.35 * n))
+
+    y = np.arange(n)
+    for i, r in enumerate(rows):
+        col = r.get("colour", SEMANTIC_COLOURS["event"])
+        ax.hlines(y[i], r["ci_low"], r["ci_high"], color=col, linewidth=1.8)
+        ax.plot(r["or"], y[i], marker="o", markersize=8, color=col,
+                markeredgecolor="black", markeredgewidth=0.5)
+        label = r["label"]
+        if r.get("n") is not None:
+            label = f"{label}  (n={int(r['n'])})"
+        ax.text(0.012, y[i], label, transform=ax.get_yaxis_transform(),
+                ha="left", va="center", fontsize=9)
+        ax.text(0.99, y[i],
+                f"{r['or']:.3f} [{r['ci_low']:.3f}, {r['ci_high']:.3f}]",
+                transform=ax.get_yaxis_transform(), ha="right", va="center",
+                fontsize=8.5, family="monospace")
+
+    ax.axvline(ref_x, color="black", linestyle="--", linewidth=0.9, alpha=0.7)
+    ax.set_yticks([])
+    ax.set_ylim(-0.6, n - 0.4)
+    ax.set_xlabel("Odds ratio per +1 °C above local same-month baseline (95 % CI)")
+    ax.set_title("Case-crossover effect estimates — forest plot")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    fig.tight_layout()
+
+    df_csv = pd.DataFrame(rows)
+    save_figure(fig, stem, output_dir, data_csv=df_csv)
     plt.close(fig)
     return output_dir / f"{stem}.png"
 
