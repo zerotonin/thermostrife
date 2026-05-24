@@ -1,0 +1,199 @@
+{
+  "overall": {
+    "n_events": 104,
+    "n_rows": 30589,
+    "covariates": [],
+    "beta_per_C": 0.08512974132281872,
+    "se_per_C": 0.02812516602339778,
+    "or_per_C": 1.088858327454288,
+    "or_ci95_low": 1.030459084365216,
+    "or_ci95_high": 1.1505672328532202,
+    "pvalue_one_sided": 0.0012357161000082773,
+    "pvalue_two_sided": 0.0024714322000165545,
+    "covariate_betas": {}
+  },
+  "strata": {
+    "Era": {
+      "era1_1750_1850": {
+        "n_events": 10,
+        "n_rows": 3203,
+        "covariates": [],
+        "beta_per_C": 0.12573756986222276,
+        "se_per_C": 0.11338070678707451,
+        "or_per_C": 1.1339845375126745,
+        "or_ci95_low": 0.9080202349513501,
+        "or_ci95_high": 1.416180919565885,
+        "pvalue_one_sided": 0.13371819949850927,
+        "pvalue_two_sided": 0.26743639899701854,
+        "covariate_betas": {}
+      },
+      "era2_1850_1920": {
+        "n_events": 19,
+        "n_rows": 6075,
+        "covariates": [],
+        "beta_per_C": 0.044404356430584054,
+        "se_per_C": 0.07753381912936158,
+        "or_per_C": 1.0454049856644674,
+        "or_ci95_low": 0.8980209071354166,
+        "or_ci95_high": 1.2169778847780501,
+        "pvalue_one_sided": 0.2834206948468698,
+        "pvalue_two_sided": 0.5668413896937397,
+        "covariate_betas": {}
+      },
+      "era3_1920_1970": {
+        "n_events": 22,
+        "n_rows": 6596,
+        "covariates": [],
+        "beta_per_C": 0.09472571340958522,
+        "se_per_C": 0.05538977606273179,
+        "or_per_C": 1.09935727480972,
+        "or_ci95_low": 0.986257060735664,
+        "or_ci95_high": 1.225427391896745,
+        "pvalue_one_sided": 0.04361758775019453,
+        "pvalue_two_sided": 0.08723517550038906,
+        "covariate_betas": {}
+      },
+      "era4_1970_2000": {
+        "n_events": 23,
+        "n_rows": 6516,
+        "covariates": [],
+        "beta_per_C": 0.12455438676029541,
+        "se_per_C": 0.061640342259294274,
+        "or_per_C": 1.1326436196021805,
+        "or_ci95_low": 1.003746315896205,
+        "or_ci95_high": 1.2780934273019928,
+        "pvalue_one_sided": 0.021657307833139017,
+        "pvalue_two_sided": 0.043314615666278034,
+        "covariate_betas": {}
+      },
+      "era5_2000_2026": {
+        "n_events": 30,
+        "n_rows": 8199,
+        "covariates": [],
+        "beta_per_C": 0.06349897668737604,
+        "se_per_C": 0.04705401456465963,
+        "or_per_C": 1.0655583954015513,
+        "or_ci95_low": 0.9716818024423368,
+        "or_ci95_high": 1.1685046392315335,
+        "pvalue_one_sided": 0.08858962895733369,
+        "pvalue_two_sided": 0.17717925791466738,
+        "covariate_betas": {}
+      }
+    },
+    "Hemisphere": {
+      "Northern": {
+        "n_events": 98,
+        "n_rows": 29140,
+        "covariates": [],
+        "beta_per_C": 0.08604384880243572,
+        "se_per_C": 0.02853157761898373,
+        "or_per_C": 1.0898541160552218,
+        "or_ci95_low": 1.030580212419776,
+        "or_ci95_high": 1.1525371630157997,
+        "pvalue_one_sided": 0.0012817605838185697,
+        "pvalue_two_sided": 0.0025635211676371394,
+        "covariate_betas": {}
+      },
+      "Southern": {
+        "n_events": 6,
+        "n_rows": 1449,
+        "covariates": [],
+        "beta_per_C": 0.05463706114208606,
+        "se_per_C": 0.16602559686772891,
+        "or_per_C": 1.0561572246092492,
+        "or_ci95_low": 0.762789547070205,
+        "or_ci95_high": 1.4623536562328474,
+        "pvalue_one_sided": 0.37104451988748244,
+        "pvalue_two_sided": 0.7420890397749649,
+        "covariate_betas": {}
+      }
+    },
+    "Duration": {
+      "long_multi_day_4_plus": {
+        "n_events": 58,
+        "n_rows": 17112,
+        "covariates": [],
+        "beta_per_C": 0.07183431181460814,
+        "se_per_C": 0.03592649481120217,
+        "or_per_C": 1.0744773011201474,
+        "or_ci95_low": 1.001419388364133,
+        "or_ci95_high": 1.1528651073037142,
+        "pvalue_one_sided": 0.022778215882071073,
+        "pvalue_two_sided": 0.04555643176414215,
+        "covariate_betas": {}
+      },
+      "short_multi_day_2_3": {
+        "n_events": 27,
+        "n_rows": 7958,
+        "covariates": [],
+        "beta_per_C": 0.15170044677469202,
+        "se_per_C": 0.057981482105407635,
+        "or_per_C": 1.1638115607045905,
+        "or_ci95_low": 1.0387901740805239,
+        "or_ci95_high": 1.3038796309644929,
+        "pvalue_one_sided": 0.004443636415619845,
+        "pvalue_two_sided": 0.00888727283123969,
+        "covariate_betas": {}
+      },
+      "single_day": {
+        "n_events": 19,
+        "n_rows": 5519,
+        "covariates": [],
+        "beta_per_C": 0.03273826091833196,
+        "se_per_C": 0.07272560245756665,
+        "or_per_C": 1.033280054072121,
+        "or_ci95_low": 0.8960098077670806,
+        "or_ci95_high": 1.1915803386170383,
+        "pvalue_one_sided": 0.32629702393027327,
+        "pvalue_two_sided": 0.6525940478605465,
+        "covariate_betas": {}
+      }
+    },
+    "Event type": {
+      "civilian_uprising_or_riot": {
+        "n_events": 78,
+        "n_rows": 22856,
+        "covariates": [],
+        "beta_per_C": 0.0920895497490146,
+        "se_per_C": 0.03156280815955375,
+        "or_per_C": 1.0964630056715552,
+        "or_ci95_low": 1.0306879024314333,
+        "or_ci95_high": 1.1664356591070781,
+        "pvalue_one_sided": 0.0017633420818549128,
+        "pvalue_two_sided": 0.0035266841637098256,
+        "covariate_betas": {}
+      },
+      "military_coup_or_putsch": {
+        "n_events": 5,
+        "n_rows": 1616,
+        "covariates": [],
+        "beta_per_C": 0.012080696296957967,
+        "se_per_C": 0.1145558492095317,
+        "or_per_C": 1.0121539626473846,
+        "or_ci95_low": 0.8086017414204161,
+        "or_ci95_high": 1.2669471157744616,
+        "pvalue_one_sided": 0.4580066632438936,
+        "pvalue_two_sided": 0.9160133264877872,
+        "covariate_betas": {}
+      },
+      "prison_riot": {
+        "skipped": true,
+        "reason": "only 2 events (< 5)",
+        "n_events": 2
+      },
+      "state_massacre_or_genocide": {
+        "n_events": 19,
+        "n_rows": 5639,
+        "covariates": [],
+        "beta_per_C": 0.0627335049489985,
+        "se_per_C": 0.07998453482009987,
+        "or_per_C": 1.064743052665004,
+        "or_ci95_low": 0.910249825803833,
+        "or_ci95_high": 1.245457824940808,
+        "pvalue_one_sided": 0.21642605657055658,
+        "pvalue_two_sided": 0.43285211314111316,
+        "covariate_betas": {}
+      }
+    }
+  }
+}
