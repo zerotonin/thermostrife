@@ -11,7 +11,7 @@ Three GitHub Actions workflows under `.github/workflows/`.
 ## `tests.yml`
 
 - **OS:** `ubuntu-latest`, `macos-latest`, `windows-latest`
-- **Python:** `3.10`, `3.11`, `3.12`
+- **Python:** `3.11`, `3.12`, `3.13`
 - Installs the package with `dev` and `climate` extras (the climate stack
   is needed for any test that touches the source adapters).
 - Coverage XML uploaded from Ubuntu / Python 3.12.
