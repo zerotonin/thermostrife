@@ -44,12 +44,22 @@ from thermostrife.constants import (  # noqa: E402
     WONG,
     save_figure,
 )
+from thermostrife.inference import event_anomaly_profile  # noqa: E402
 from thermostrife.lookup import resolve_event_anomaly  # noqa: E402
+from thermostrife.viz import (  # noqa: E402
+    plot_forest_h2,
+    plot_superposed_epoch,
+    plot_warming_stripes_timeline,
+)
 
 VIOLENT_JSON = REPORTS_DIR / "inference_results.json"
 PEACEFUL_JSON = REPORTS_DIR / "inference_results_peaceful.json"
 COMPARISON_MD = REPORTS_DIR / "peaceful_vs_violent.md"
 COMPARISON_FIG_DIR = REPORTS_DIR / "figs"
+HADCET_MEAN_PATH = (
+    REPORTS_DIR.parent / "data" / "raw" / "observatories"
+    / "hadcet" / "meantemp_daily_totals.txt"
+)
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -58,6 +68,7 @@ COMPARISON_FIG_DIR = REPORTS_DIR / "figs"
 
 
 def build_anomaly_df(curated_csv: Path, geo_csv: Path) -> pd.DataFrame:
+    """Resolve every event into (event_id, year, anomaly_C, provenance)."""
     warnings.filterwarnings("ignore")
     curated = pd.read_csv(curated_csv).set_index("event_id")
     geo = pd.read_csv(geo_csv).set_index("event_id")
@@ -71,10 +82,45 @@ def build_anomaly_df(curated_csv: Path, geo_csv: Path) -> pd.DataFrame:
         bmean = float(r.baseline["tmax"].mean())
         rows.append({
             "event_id": event_id,
+            "year": when.year,
             "anomaly_C": r.tmax_event_c - bmean,
             "provenance": r.provenance,
         })
     return pd.DataFrame(rows)
+
+
+def build_event_objects(curated_csv: Path, geo_csv: Path) -> list[dict]:
+    """Resolve every event into the full event-dict format used by inference."""
+    warnings.filterwarnings("ignore")
+    curated = pd.read_csv(curated_csv).set_index("event_id")
+    geo = pd.read_csv(geo_csv).set_index("event_id")
+    out = []
+    for event_id, grow in geo.iterrows():
+        crow = curated.loc[event_id]
+        when = pd.to_datetime(crow["start_date"]).date()
+        r = resolve_event_anomaly(grow["lat"], grow["lon"], when, radius_km=60)
+        if r.tmax_event_c is None or len(r.baseline) == 0:
+            continue
+        out.append({
+            "event_id": event_id,
+            "lat": float(grow["lat"]),
+            "lon": float(grow["lon"]),
+            "when": when,
+            "tmax_event_c": float(r.tmax_event_c),
+            "baseline": r.baseline,
+            "provenance": r.provenance,
+            "station_id": r.station_id,
+        })
+    return out
+
+
+def load_hadcet_annual_mean() -> pd.Series:
+    """HadCET daily mean → annual mean Series indexed by integer year."""
+    df = pd.read_csv(
+        HADCET_MEAN_PATH, sep=r"\s+", skiprows=2, names=["date", "value"],
+    )
+    df["date"] = pd.to_datetime(df["date"])
+    return df.groupby(df["date"].dt.year)["value"].mean().rename("hadcet_annual")
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -339,9 +385,55 @@ def main() -> int:
     COMPARISON_FIG_DIR.mkdir(parents=True, exist_ok=True)
     plot_comparison(v_df, p_df, headline, COMPARISON_FIG_DIR)
 
+    # ── SOTA-style overlay figures ─────────────────────────────
+    # Warming-stripes timeline (HadCET annual mean as background)
+    annual = load_hadcet_annual_mean()
+    plot_warming_stripes_timeline(
+        annual_temp=annual,
+        panels={
+            "Violent uprisings": v_df,
+            "Peaceful gatherings": p_df,
+        },
+        output_dir=COMPARISON_FIG_DIR,
+    )
+
+    # Forest plot of H2 ORs
+    forest_rows = [
+        {
+            "label": "Violent uprisings",
+            "or": violent["H2_case_crossover"]["or_per_C"],
+            "ci_low": violent["H2_case_crossover"]["or_ci95_low"],
+            "ci_high": violent["H2_case_crossover"]["or_ci95_high"],
+            "n": violent["n_events_resolved"],
+        },
+        {
+            "label": "Peaceful gatherings",
+            "or": peaceful["H2_case_crossover"]["or_per_C"],
+            "ci_low": peaceful["H2_case_crossover"]["or_ci95_low"],
+            "ci_high": peaceful["H2_case_crossover"]["or_ci95_high"],
+            "n": peaceful["n_events_resolved"],
+            "colour": "#56B4E9",
+        },
+    ]
+    plot_forest_h2(forest_rows, COMPARISON_FIG_DIR)
+
+    # Superposed-epoch composite
+    print("[compare_panels] computing superposed-epoch profiles "
+          "(may hit network for any uncached t±2 / t+1 days) …")
+    v_events = build_event_objects(CURATED_CSV, EVENT_GEO_CSV)
+    p_events = build_event_objects(PEACEFUL_CSV, PEACEFUL_GEO_CSV)
+    profiles = {
+        "Violent uprisings": event_anomaly_profile(v_events),
+        "Peaceful gatherings": event_anomaly_profile(p_events),
+    }
+    plot_superposed_epoch(profiles, COMPARISON_FIG_DIR)
+
     write_report(violent, peaceful)
     print(f"[done] {COMPARISON_MD}")
     print("[done] figs/peaceful_vs_violent.{svg,png,csv}")
+    print("[done] figs/warming_stripes_timeline.{svg,png,csv}")
+    print("[done] figs/forest_h2.{svg,png,csv}")
+    print("[done] figs/superposed_epoch.{svg,png,csv}")
     return 0
 
 
