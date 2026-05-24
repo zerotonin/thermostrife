@@ -45,9 +45,15 @@ from thermostrife.inference import (
     wilcoxon_signed_rank,
 )
 from thermostrife.lookup import resolve_event_anomaly
+from thermostrife.viz import (
+    plot_anomaly_by_year,
+    plot_anomaly_raincloud,
+    plot_null_density,
+)
 
 REPORT_MD = REPORTS_DIR / "inference_results.md"
 REPORT_JSON = REPORTS_DIR / "inference_results.json"
+FIGS_DIR = REPORTS_DIR / "figs"
 
 
 def build_events() -> list[dict]:
@@ -77,6 +83,7 @@ def build_events() -> list[dict]:
 
 def main() -> int:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    FIGS_DIR.mkdir(parents=True, exist_ok=True)
     events = build_events()
     if not events:
         print("[run_inference] no events resolved; nothing to test.")
@@ -108,10 +115,67 @@ def main() -> int:
     with REPORT_JSON.open("w") as f:
         json.dump(results, f, indent=2, default=str)
 
+    # ── Figures ─────────────────────────────────────────────
+    events_df = pd.DataFrame([
+        {
+            "event_id": e["event_id"],
+            "year": e["when"].year,
+            "anomaly_C": e["tmax_event_c"] - float(e["baseline"]["tmax"].mean()),
+            "provenance": e["provenance"],
+        }
+        for e in events
+    ])
+    cc = results["H2_case_crossover"]
+    annotation = (
+        f"H2 case-crossover\n"
+        f"  OR = {cc['or_per_C']:.3f} per +1 °C\n"
+        f"  95% CI {cc['or_ci95_low']:.3f}–{cc['or_ci95_high']:.3f}\n"
+        f"  one-sided p = {cc['pvalue_one_sided']:.4g}"
+    )
+    plot_anomaly_raincloud(events_df, FIGS_DIR, annotation=annotation)
+    plot_anomaly_by_year(events_df, FIGS_DIR)
+
+    # Separate small permutation just for the null-density figure
+    perm_for_fig = _permutation_draws(frame, n_perm=5000)
+    plot_null_density(
+        observed_stat=results["H2_stratified_permutation"]["observed_diff_C"],
+        null_draws=perm_for_fig,
+        output_dir=FIGS_DIR,
+        two_sided_p=results["H2_stratified_permutation"]["pvalue_two_sided"],
+    )
+
     write_markdown(results, REPORT_MD)
     print(f"[done] {REPORT_MD}")
     print(f"[done] {REPORT_JSON}")
+    print(f"[done] figures in {FIGS_DIR}")
     return 0
+
+
+def _permutation_draws(frame: pd.DataFrame, n_perm: int = 5000) -> np.ndarray:
+    """Quick local permutation just to populate the null-density plot.
+
+    Mirrors :func:`thermostrife.inference.stratified_permutation` but
+    keeps the raw draws so the KDE has something to fit.  Small B
+    (5000) is plenty for a smooth-looking density.
+    """
+    work = frame.dropna(subset=["tmax_c", "is_case", "event_id"]).copy()
+    per_event = []
+    for _eid, grp in work.groupby("event_id"):
+        if grp["is_case"].sum() != 1:
+            continue
+        per_event.append(grp["tmax_c"].to_numpy())
+    rng = np.random.default_rng(20260524)
+    draws = np.empty(n_perm)
+    for i in range(n_perm):
+        diffs = []
+        for tmaxs in per_event:
+            j = rng.integers(0, len(tmaxs))
+            ev = tmaxs[j]
+            mask = np.ones(len(tmaxs), dtype=bool)
+            mask[j] = False
+            diffs.append(ev - tmaxs[mask].mean())
+        draws[i] = float(np.mean(diffs))
+    return draws
 
 
 def write_markdown(results: dict, out: Path) -> None:
@@ -220,6 +284,15 @@ def write_markdown(results: dict, out: Path) -> None:
                 f"(95 % CI {boot['ci_low']:+.3f} – {boot['ci_high']:+.3f}), "
                 f"n = {boot['n']}, B = {boot['n_boot']}\n"
             )
+
+        f.write("\n## Figures\n\n")
+        f.write(
+            "Three SVG + PNG + CSV triples land in `reports/figs/`. SVGs are "
+            "Inkscape-editable (`svg.fonttype = 'none'`).\n\n"
+        )
+        f.write("![Anomaly raincloud](figs/anomaly_raincloud.png)\n\n")
+        f.write("![Null density](figs/null_density.png)\n\n")
+        f.write("![Anomaly by year](figs/anomaly_by_year.png)\n")
 
 
 if __name__ == "__main__":
