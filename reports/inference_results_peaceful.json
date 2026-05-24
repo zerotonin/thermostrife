@@ -1,0 +1,137 @@
+{
+  "n_events_resolved": 41,
+  "n_case_crossover_rows": 11205,
+  "provenance_counts": {
+    "tier1_ghcn": 32,
+    "tier2_hadcet_max": 5,
+    "tier4_20crv3": 2,
+    "tier2_hadcet_mean": 1,
+    "tier3_era5": 1
+  },
+  "H1_wilcoxon_signed_rank": {
+    "n": 41,
+    "statistic": 351.0,
+    "pvalue": 0.8483329222485736,
+    "median": -1.1048387096774164
+  },
+  "H1_sign_test": {
+    "n_nonzero": 41,
+    "n_positive": 18,
+    "proportion_positive": 0.43902439024390244,
+    "pvalue": 0.8255555602754612
+  },
+  "H1_bootstrap_mean_ci": {
+    "n": 41,
+    "mean": -0.613156855249479,
+    "ci_low": -2.01352041552281,
+    "ci_high": 0.828630887750348,
+    "n_boot": 10000
+  },
+  "H2_case_crossover": {
+    "n_events": 41,
+    "n_rows": 11205,
+    "covariates": [
+      "daylight_h"
+    ],
+    "beta_per_C": -0.040129896690777093,
+    "se_per_C": 0.0426198806476323,
+    "or_per_C": 0.960664643889065,
+    "or_ci95_low": 0.8836759439791912,
+    "or_ci95_high": 1.0443608477818154,
+    "pvalue_one_sided": 0.8267953590531685,
+    "pvalue_two_sided": 0.34640928189366305,
+    "covariate_betas": {
+      "daylight_h": -0.16905965065832027
+    }
+  },
+  "H2_stratified_permutation": {
+    "n_events": 41,
+    "n_perm": 10000,
+    "observed_diff_C": -0.613156855249479,
+    "pvalue_one_sided": 0.846,
+    "pvalue_two_sided": 0.3062
+  },
+  "H3_within_event_contrast": {
+    "n_events_used": 32,
+    "n_events_skipped": 9,
+    "window_offsets_days": [
+      0,
+      -1
+    ],
+    "surround_offsets_days": [
+      -7,
+      7
+    ],
+    "mean_diff_C": -0.044619750976562594,
+    "median_diff_C": -0.7000000000000002,
+    "ci95_low_C": -1.4997595763206477,
+    "ci95_high_C": 1.5644485521316511,
+    "wilcoxon_statistic": 222.0,
+    "pvalue_one_sided": 0.7838824397395215
+  },
+  "sigma_rescaled": {
+    "n_events": 41,
+    "mean_z": -0.1637870105580206,
+    "median_z": -0.3736361235692429,
+    "ci95_low_z": -0.5228526376371573,
+    "ci95_high_z": 0.20047262486132836,
+    "fraction_positive": 0.43902439024390244
+  },
+  "multiple_comparisons": {
+    "family_size": 5,
+    "alpha": 0.05,
+    "bonferroni_threshold": 0.01,
+    "bh_cutoff_rank": 0,
+    "n_bh_rejected": 0,
+    "n_bonferroni_rejected": 0,
+    "results": {
+      "H3 within-event contrast": {
+        "raw_p": 0.7838824397395215,
+        "rank": 1,
+        "bh_adjusted_p": 0.8483329222485736,
+        "bh_threshold": 0.010000000000000002,
+        "bh_reject": false,
+        "bonferroni_adjusted_p": 1.0,
+        "bonferroni_reject": false
+      },
+      "H1 sign test": {
+        "raw_p": 0.8255555602754612,
+        "rank": 2,
+        "bh_adjusted_p": 0.8483329222485736,
+        "bh_threshold": 0.020000000000000004,
+        "bh_reject": false,
+        "bonferroni_adjusted_p": 1.0,
+        "bonferroni_reject": false
+      },
+      "H2 conditional logit": {
+        "raw_p": 0.8267953590531685,
+        "rank": 3,
+        "bh_adjusted_p": 0.8483329222485736,
+        "bh_threshold": 0.03,
+        "bh_reject": false,
+        "bonferroni_adjusted_p": 1.0,
+        "bonferroni_reject": false
+      },
+      "H2 stratified permutation": {
+        "raw_p": 0.846,
+        "rank": 4,
+        "bh_adjusted_p": 0.8483329222485736,
+        "bh_threshold": 0.04000000000000001,
+        "bh_reject": false,
+        "bonferroni_adjusted_p": 1.0,
+        "bonferroni_reject": false
+      },
+      "H1 Wilcoxon signed-rank": {
+        "raw_p": 0.8483329222485736,
+        "rank": 5,
+        "bh_adjusted_p": 0.8483329222485736,
+        "bh_threshold": 0.05,
+        "bh_reject": false,
+        "bonferroni_adjusted_p": 1.0,
+        "bonferroni_reject": false
+      }
+    }
+  },
+  "panel": "peaceful",
+  "title_label": "peaceful gatherings"
+}
