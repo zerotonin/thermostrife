@@ -16,6 +16,7 @@ from thermostrife.inference import (
     h3_within_event_contrast,
     hsiang_sigma_rescaled,
     stratified_permutation,
+    stratify_case_crossover,
 )
 
 
@@ -277,3 +278,54 @@ def test_build_frame_skips_unresolved(missing_field):
         # good event survives.
     frame = build_case_crossover_frame([e, bad])
     assert "ok" in frame["event_id"].values
+
+
+class TestStratifyCaseCrossover:
+    def test_splits_and_skips_small(self):
+        # 20 'A' events, 3 'B' events; B should be skipped at min_events=5.
+        events_a = [
+            _synthetic_event(
+                f"a_{i}", lat=45.0, when=date(2000, 6, 15),
+                event_tmax=20.0, baseline_mean=15.0, baseline_std=3.0,
+                rng_seed=i,
+            )
+            for i in range(20)
+        ]
+        events_b = [
+            _synthetic_event(
+                f"b_{i}", lat=45.0, when=date(2000, 6, 15),
+                event_tmax=20.0, baseline_mean=15.0, baseline_std=3.0,
+                rng_seed=100 + i,
+            )
+            for i in range(3)
+        ]
+        for e in events_a:
+            e["stratum"] = "A"
+        for e in events_b:
+            e["stratum"] = "B"
+        events = events_a + events_b
+
+        results = stratify_case_crossover(
+            events, key_fn=lambda e: e["stratum"], min_events=5, covariates=[],
+        )
+        assert set(results.keys()) == {"A", "B"}
+        assert not results["A"].get("skipped"), results["A"]
+        assert results["A"]["n_events"] == 20
+        assert results["A"]["beta_per_C"] > 0
+        assert results["B"].get("skipped")
+        assert results["B"]["n_events"] == 3
+
+    def test_none_key_filters_event(self):
+        # Events with key=None should be dropped, not stratified.
+        events = [
+            _synthetic_event(
+                f"k_{i}", lat=45.0, when=date(2000, 6, 15),
+                event_tmax=20.0, baseline_mean=15.0, baseline_std=3.0,
+                rng_seed=i,
+            )
+            for i in range(20)
+        ]
+        key_fn = lambda e: None if e["event_id"].endswith("0") else "kept"  # noqa: E731
+        results = stratify_case_crossover(events, key_fn, min_events=5, covariates=[])
+        # 2 events ('k_0', 'k_10') filtered → 18 left
+        assert results["kept"]["n_events"] == 18
