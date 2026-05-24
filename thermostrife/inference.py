@@ -322,6 +322,86 @@ def stratified_permutation(
 # ─────────────────────────────────────────────────────────────────
 
 
+def stratify_case_crossover(
+    events: list[dict],
+    key_fn,
+    *,
+    min_events: int = 5,
+    covariates: list[str] | None = None,
+) -> dict:
+    """Split events into strata by ``key_fn(event) -> str`` and run H2 per stratum.
+
+    Returns a dict mapping stratum label to the
+    :func:`case_crossover_conditional_logit` result dict.  Strata with
+    fewer than ``min_events`` events are skipped with a
+    ``{'skipped': True, 'reason': ...}`` marker so the caller can still
+    see them in the report.
+    """
+    if covariates is None:
+        covariates = []  # daylight collinearity can sting small strata
+    buckets: dict[str, list[dict]] = {}
+    for e in events:
+        label = key_fn(e)
+        if label is None:
+            continue
+        buckets.setdefault(str(label), []).append(e)
+
+    results = {}
+    for label, evs in sorted(buckets.items()):
+        if len(evs) < min_events:
+            results[label] = {
+                "skipped": True,
+                "reason": f"only {len(evs)} events (< {min_events})",
+                "n_events": len(evs),
+            }
+            continue
+        frame = build_case_crossover_frame(evs)
+        results[label] = case_crossover_conditional_logit(frame, covariates=covariates)
+        results[label]["n_events"] = len(evs)
+    return results
+
+
+def event_anomaly_profile(
+    events: list[dict],
+    offsets: tuple[int, ...] = (-7, -2, -1, 0, 1, 2, 7),
+    fetch_fn=fetch_same_source_day,
+) -> pd.DataFrame:
+    """Fetch per-event Tmax at each ``offset`` and return as a long frame.
+
+    For each event we look up Tmax on day ``when + offset`` via the
+    same source that resolved the event day, subtract the event's
+    baseline mean to get an anomaly, and stack the rows.  Empty offsets
+    (the fetcher returned ``None``) are skipped silently — the
+    superposed-epoch plotter handles the resulting ragged ``n`` per
+    offset.
+
+    Returns columns: ``event_id``, ``offset_days``, ``anomaly_C``.
+    """
+    rows: list[dict] = []
+    for e in events:
+        baseline = e.get("baseline")
+        if baseline is None or len(baseline) == 0:
+            continue
+        baseline_mean = float(baseline["tmax"].mean())
+        for off in offsets:
+            if off == 0:
+                v = e.get("tmax_event_c")
+            else:
+                day = e["when"] + timedelta(days=off)
+                v = fetch_fn(
+                    e["provenance"], e["lat"], e["lon"], day,
+                    station_id=e.get("station_id"),
+                )
+            if v is None:
+                continue
+            rows.append({
+                "event_id": e["event_id"],
+                "offset_days": int(off),
+                "anomaly_C": float(v) - baseline_mean,
+            })
+    return pd.DataFrame(rows)
+
+
 def h3_within_event_contrast(
     events: list[dict],
     window_offsets: tuple[int, ...] = (0, -1),
