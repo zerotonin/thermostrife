@@ -104,9 +104,32 @@ H3 is the secondary within-event check.
 
 ## 5 — Multiple comparisons
 
-~6–8 tests total. We treat H2 as the single confirmatory test (α = 0.05)
-and H1 / H3 as auxiliary. We report **both raw p-values and
-Bonferroni-adjusted p-values** for the full battery.
+We pre-register the H1 / H2 / H3 tests as a single family of 5 actual
+p-values (Wilcoxon, sign, conditional-logit, permutation, contrast;
+the bootstrap CI and σ-rescaling are effect-size descriptors, not
+hypothesis tests).
+
+**H2 conditional logit is the single confirmatory test**, reported at
+uncorrected α = 0.05.  Its result is the headline scientific claim
+and is the only test on which a null finding would refute the
+hypothesis on its own.
+
+For the **auxiliary battery** (the other four), we report **both**:
+
+- **Benjamini–Hochberg FDR-adjusted q-values** (`α = 0.05`). BH is the
+  preferred adjustment for our battery because the tests are highly
+  correlated (same underlying anomalies, same direction); Bonferroni
+  assumes worst-case independence and is conservative here. BH is also
+  the standard in the climate-and-conflict literature
+  (Hsiang/Burke/Miguel) and behavioural-neuroscience studies of heat
+  and aggression (Heilmann/Kahn/Tang 2021).
+- **Bonferroni-adjusted p-values** (`α = 0.05`, threshold = α / k =
+  0.010 for k = 5) as a conservative reference for sceptical reviewers.
+
+H2 conditional logit clears every correction; the choice of correction
+only matters for the auxiliary tests. We do not perform additional
+correction for the σ-rescaling or bootstrap CI because those are
+descriptive estimators, not hypothesis tests.
 
 ## 6 — Power
 
