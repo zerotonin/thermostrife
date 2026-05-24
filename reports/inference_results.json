@@ -1,0 +1,61 @@
+{
+  "n_events_resolved": 104,
+  "n_case_crossover_rows": 30589,
+  "provenance_counts": {
+    "tier1_ghcn": 58,
+    "tier4_20crv3": 37,
+    "tier3_era5": 7,
+    "tier2_hadcet_mean": 2
+  },
+  "H1_wilcoxon_signed_rank": {
+    "n": 104,
+    "statistic": 3520.0,
+    "pvalue": 0.005206295431563284,
+    "median": 0.5699356733823056
+  },
+  "H1_sign_test": {
+    "n_nonzero": 104,
+    "n_positive": 60,
+    "proportion_positive": 0.5769230769230769,
+    "pvalue": 0.07047814410615405
+  },
+  "H1_bootstrap_mean_ci": {
+    "n": 104,
+    "mean": 1.0530406478428374,
+    "ci_low": 0.3753978587148037,
+    "ci_high": 1.7256098538485403,
+    "n_boot": 10000
+  },
+  "H2_case_crossover": {
+    "n_events": 104,
+    "n_rows": 30589,
+    "covariates": [
+      "daylight_h"
+    ],
+    "beta_per_C": 0.0850934047237098,
+    "se_per_C": 0.028775658337529608,
+    "or_per_C": 1.0888187627645844,
+    "or_ci95_low": 1.0291087273424462,
+    "or_ci95_high": 1.151993240995715,
+    "pvalue_one_sided": 0.0015525784701010403,
+    "pvalue_two_sided": 0.0031051569402020807,
+    "covariate_betas": {
+      "daylight_h": 0.0017642857871962927
+    }
+  },
+  "H2_stratified_permutation": {
+    "n_events": 104,
+    "n_perm": 10000,
+    "observed_diff_C": 1.0530406478428374,
+    "pvalue_one_sided": 0.0015,
+    "pvalue_two_sided": 0.003
+  },
+  "sigma_rescaled": {
+    "n_events": 104,
+    "mean_z": 0.25768916210692017,
+    "median_z": 0.1856245826435537,
+    "ci95_low_z": 0.058841611980424126,
+    "ci95_high_z": 0.4529266091834904,
+    "fraction_positive": 0.5769230769230769
+  }
+}
