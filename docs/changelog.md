@@ -6,6 +6,55 @@ versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added — Sprint 5 (case-crossover inference engine)
+
+- **Case-crossover conditional logit**
+  (`thermostrife.inference.case_crossover_conditional_logit`)
+  implements the pre-registered H2 headline test via
+  `statsmodels.discrete.conditional_models.ConditionalLogit`.
+  Strata = event_id, case = event day, controls = baseline days.
+  Reports OR per +1 °C above local same-month baseline with 95 %
+  CI and one- and two-sided p-values.
+- **Stratified permutation** (`stratified_permutation`) backs up
+  the parametric test by shuffling case labels within each event
+  stratum (B = 10 000) on the mean-event-vs-mean-control
+  statistic.
+- **Daylight-hours covariate** (`daylight_hours`) — closed-form
+  solar geometry, no extra dependencies; goes in alongside
+  `tmax_c` in the conditional logit so the model controls for
+  the Field (1992) outdoor-opportunity confound.
+- **Burke-2015 σ-rescaling** (`hsiang_sigma_rescaled`) expresses
+  each event as a z-score against its own baseline std and
+  averages; CI via bootstrap.
+- **`scripts/run_inference.py`** drives the whole pipeline:
+  resolve every event → build long case-crossover frame → run
+  all four tests → write `reports/inference_results.{md,json}`.
+- **First headline result on 104 / 112 events:**
+  case-crossover **OR = 1.089 per +1 °C** above local same-month
+  baseline (95 % CI 1.029 – 1.152), one-sided **p = 0.0016**,
+  two-sided 0.0031. Stratified permutation converges: observed
+  +1.053 °C, p = 0.0015. σ-rescaled mean z = +0.258 σ
+  (CI +0.059 – +0.453); 57.7 % of events sit above their local
+  baseline.
+- 10 new `tests/test_inference.py` cases lock in the daylight
+  closed-form, the synthetic-null / synthetic-signal behaviour
+  of the conditional logit, and the σ-rescaling arithmetic.
+
+### Added — Sprint 2b (data-coverage limitations note)
+
+- New § 7b in `docs/methods.md` enumerates the 8 unresolved
+  pre-1806 events and the four candidate historical-climatology
+  references (Rousseau 2009, Yiou 2014, Cornes 2013,
+  Slonosky 2002), with the argument that the missingness is not
+  informative for the H1 / H2 hypotheses.
+
+### Fixed — CI: drop Python 3.10 from the matrix
+
+- `requires-python` bumped to `>=3.11` (meteostat 2.x is 3.11+;
+  3.10 jobs were failing in CI). Workflow matrix updated to
+  3.11 / 3.12 / 3.13. Ruff `target-version` follows. Documented
+  in `docs/development/ci_cd.md`.
+
 ### Added — Sprint 3 (Tier-3 ERA5 reanalysis)
 
 - **ERA5 adapter.** New `thermostrife/sources/era5_src.py` fetches
