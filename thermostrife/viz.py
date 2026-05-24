@@ -20,14 +20,25 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from scipy.stats import gaussian_kde
+# Force the non-interactive backend before pyplot is touched.  This
+# module is import-time loaded by run_inference.py and tests; if a Qt
+# binding is present in the env (thermostrife conda env happens to
+# ship PyQt5), matplotlib will otherwise try to grab a display and
+# crash on headless runs.
+os.environ.setdefault("MPLBACKEND", "Agg")
+import matplotlib  # noqa: E402
+
+matplotlib.use("Agg", force=True)
+
+import matplotlib.patches as mpatches  # noqa: E402
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
+from scipy.stats import gaussian_kde  # noqa: E402
 
 from .constants import (
     FIGURE_SIZE_DOUBLE,
