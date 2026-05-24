@@ -122,6 +122,10 @@ CURATED_CSV: Path = RAW_DIR / "uprisings_temperature.csv"
 EVENT_GEO_CSV: Path = RAW_DIR / "event_geo.csv"
 STATION_MAP_CSV: Path = RAW_DIR / "station_map.csv"
 
+# Peaceful-crowd parallel-control panel (Methods § 3b).
+PEACEFUL_CSV: Path = RAW_DIR / "peaceful_gatherings.csv"
+PEACEFUL_GEO_CSV: Path = RAW_DIR / "peaceful_geo.csv"
+
 # ─────────────────────────────────────────────────────────────────
 #  Type aliases
 # ─────────────────────────────────────────────────────────────────
@@ -202,6 +206,8 @@ __all__ = [
     "CURATED_CSV",
     "EVENT_GEO_CSV",
     "STATION_MAP_CSV",
+    "PEACEFUL_CSV",
+    "PEACEFUL_GEO_CSV",
     "PROVENANCE_TIERS",
     "ProvenanceTier",
     "save_figure",
