@@ -24,7 +24,7 @@ data/cache/
 # Geocoder cache (regenerable from build_geo_map.py)
 scripts/.geocode_cache.json
 
-# Reports / figures (generated)
-reports/figs/
-reports/results.json
+# Reports — figures and headline outputs are tracked (they are the
+# publishable artefacts of the analysis); ephemeral subdirectories
+# can be added back here if any are introduced later.
 .pytest_cache/
