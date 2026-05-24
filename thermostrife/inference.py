@@ -24,13 +24,14 @@ in interpretation, not in the pipeline.
 from __future__ import annotations
 
 import math
-from datetime import date
+from datetime import date, timedelta
 
 import numpy as np
 import pandas as pd
 from scipy import stats
 
 from .constants import N_BOOTSTRAP, N_PERMUTATION, RNG_SEED
+from .lookup import fetch_same_source_day
 
 # ─────────────────────────────────────────────────────────────────
 #  H1: one-sample tests on event-day anomalies
@@ -317,6 +318,103 @@ def stratified_permutation(
 
 
 # ─────────────────────────────────────────────────────────────────
+#  H3: within-event temporal contrast (hot day vs hot week)
+# ─────────────────────────────────────────────────────────────────
+
+
+def h3_within_event_contrast(
+    events: list[dict],
+    window_offsets: tuple[int, ...] = (0, -1),
+    surround_offsets: tuple[int, ...] = (-7, 7),
+    fetch_fn=fetch_same_source_day,
+) -> dict:
+    """Per-event paired contrast: mean anomaly {t, t-1} minus {t-7, t+7}.
+
+    For each resolved event, fetch Tmax on day ``t + offset`` for each
+    offset in ``window_offsets ∪ surround_offsets`` via the *same*
+    source/station that resolved the event day, convert to anomaly by
+    subtracting the existing baseline mean, then take
+
+        diff = mean(anomaly @ window_offsets) − mean(anomaly @ surround_offsets)
+
+    A positive ``diff`` means the event day and its immediate neighbour
+    sit higher above the local baseline than days a week away — the
+    signature of a "hot day triggers riot" mechanism.  A flat profile
+    (``diff ≈ 0``) is consistent with the alternative "hot week
+    happened to contain an event" explanation.
+
+    Tests the across-event distribution of ``diff`` with a one-sided
+    Wilcoxon signed-rank against H₁: median > 0.  Returns the n actually
+    used (events where every offset resolved), the mean and median
+    diff, a bootstrap 95 % CI on the mean, and the p-value.
+    """
+    diffs = []
+    n_skipped_missing_day = 0
+    needed = tuple(set(window_offsets) | set(surround_offsets))
+
+    for e in events:
+        baseline = e.get("baseline")
+        if baseline is None or len(baseline) == 0:
+            n_skipped_missing_day += 1
+            continue
+        baseline_mean = float(baseline["tmax"].mean())
+
+        vals: dict[int, float] = {}
+        ok = True
+        for off in needed:
+            if off == 0:
+                v = e.get("tmax_event_c")
+            else:
+                day = e["when"] + timedelta(days=off)
+                v = fetch_fn(
+                    e["provenance"], e["lat"], e["lon"], day,
+                    station_id=e.get("station_id"),
+                )
+            if v is None:
+                ok = False
+                break
+            vals[off] = float(v)
+        if not ok:
+            n_skipped_missing_day += 1
+            continue
+
+        window_anom = float(np.mean([vals[off] - baseline_mean for off in window_offsets]))
+        surround_anom = float(np.mean([vals[off] - baseline_mean for off in surround_offsets]))
+        diffs.append(window_anom - surround_anom)
+
+    if len(diffs) < 5:
+        return {
+            "skipped": True,
+            "reason": f"only {len(diffs)} events had all required offsets",
+        }
+
+    arr = np.asarray(diffs)
+    if np.all(arr == 0):
+        return {
+            "skipped": True,
+            "reason": "all event diffs are exactly zero — Wilcoxon undefined",
+            "n_events_used": int(len(arr)),
+        }
+    res = stats.wilcoxon(arr, alternative="greater", zero_method="wilcox")
+    rng = np.random.default_rng(RNG_SEED + 5)
+    boot = rng.choice(arr, size=(N_BOOTSTRAP, len(arr)), replace=True).mean(axis=1)
+    ci_lo, ci_hi = np.quantile(boot, [0.025, 0.975])
+
+    return {
+        "n_events_used": int(len(arr)),
+        "n_events_skipped": int(n_skipped_missing_day),
+        "window_offsets_days": list(window_offsets),
+        "surround_offsets_days": list(surround_offsets),
+        "mean_diff_C": float(arr.mean()),
+        "median_diff_C": float(np.median(arr)),
+        "ci95_low_C": float(ci_lo),
+        "ci95_high_C": float(ci_hi),
+        "wilcoxon_statistic": float(res.statistic),
+        "pvalue_one_sided": float(res.pvalue),
+    }
+
+
+# ─────────────────────────────────────────────────────────────────
 #  Burke-2015-style 1σ rescaling
 # ─────────────────────────────────────────────────────────────────
 
@@ -362,4 +460,73 @@ def hsiang_sigma_rescaled(
         "ci95_low_z": float(lo),
         "ci95_high_z": float(hi),
         "fraction_positive": float((z_arr > 0).mean()),
+    }
+
+
+# ─────────────────────────────────────────────────────────────────
+#  Multiple-comparisons correction  « BH FDR + Bonferroni »
+# ─────────────────────────────────────────────────────────────────
+
+
+def benjamini_hochberg(
+    pvalues: dict[str, float],
+    alpha: float = 0.05,
+) -> dict:
+    """Benjamini–Hochberg step-up FDR correction.
+
+    Args:
+        pvalues:  Dict mapping test name → raw p-value.
+        alpha:    Target false-discovery rate (default 0.05).
+
+    Returns:
+        Dict with per-test ``raw_p``, ``bh_adjusted_p`` (the standard
+        monotone-adjusted q-value), ``bonferroni_adjusted_p``, and the
+        boolean ``bh_reject`` / ``bonferroni_reject`` flags.  Also
+        exposes the family-level threshold pair so the report can quote
+        them.
+    """
+    items = list(pvalues.items())
+    k = len(items)
+    if k == 0:
+        return {"family_size": 0, "alpha": alpha, "results": {}}
+
+    # Sort by p ascending, keeping the original names.
+    sorted_items = sorted(items, key=lambda kv: kv[1])
+    sorted_names = [name for name, _ in sorted_items]
+    sorted_p = np.array([p for _, p in sorted_items], dtype=float)
+
+    # Step-up BH adjusted p (q-values): q_(i) = min over j>=i of (k/j)·p_(j),
+    # right-to-left cumulative minimum then clamped to ≤ 1.
+    ranks = np.arange(1, k + 1)
+    raw_q = sorted_p * k / ranks
+    bh_adj_sorted = np.minimum.accumulate(raw_q[::-1])[::-1]
+    bh_adj_sorted = np.clip(bh_adj_sorted, 0.0, 1.0)
+
+    # Largest i where p_(i) ≤ (i/k)·alpha → BH rejects ranks 1..i.
+    thresholds = ranks / k * alpha
+    pass_mask = sorted_p <= thresholds
+    bh_cutoff_rank = int(np.max(np.where(pass_mask)[0]) + 1) if pass_mask.any() else 0
+
+    bonf_adj_sorted = np.clip(sorted_p * k, 0.0, 1.0)
+    bonf_threshold = alpha / k
+
+    results = {}
+    for idx, name in enumerate(sorted_names):
+        results[name] = {
+            "raw_p": float(sorted_p[idx]),
+            "rank": idx + 1,
+            "bh_adjusted_p": float(bh_adj_sorted[idx]),
+            "bh_threshold": float(thresholds[idx]),
+            "bh_reject": bool(idx < bh_cutoff_rank),
+            "bonferroni_adjusted_p": float(bonf_adj_sorted[idx]),
+            "bonferroni_reject": bool(sorted_p[idx] <= bonf_threshold),
+        }
+    return {
+        "family_size": k,
+        "alpha": alpha,
+        "bonferroni_threshold": float(bonf_threshold),
+        "bh_cutoff_rank": bh_cutoff_rank,
+        "n_bh_rejected": bh_cutoff_rank,
+        "n_bonferroni_rejected": int((sorted_p <= bonf_threshold).sum()),
+        "results": results,
     }
