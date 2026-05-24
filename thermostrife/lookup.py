@@ -233,3 +233,66 @@ def resolve_event_anomaly(
             )
 
     return AnomalyFetch.empty(note="all available tiers returned no anomaly fetch")
+
+
+# ─────────────────────────────────────────────────────────────────
+#  Same-source single-day fetch  « for H3 surrounding-day queries »
+# ─────────────────────────────────────────────────────────────────
+
+
+def fetch_same_source_day(
+    provenance: str,
+    lat: float,
+    lon: float,
+    when: date,
+    *,
+    station_id: str | None = None,
+    radius_km: float = 60.0,
+) -> float | None:
+    """Fetch Tmax at ``when`` via the same tier / station that resolved an event.
+
+    Dispatch by ``provenance``: tier1 → meteostat (with ``station_id`` as
+    a hint to pin the same station the cascade picked), tier2 → HadCET,
+    tier3 → ERA5, tier4 → 20CRv3.  Returns ``None`` if the dispatched
+    adapter has no value for that date.
+
+    Used by ``thermostrife.inference.h3_within_event_contrast`` to pull
+    surrounding-day Tmax values (t±1, t±7) for the within-event control
+    test without mixing sources or stations.
+    """
+    if provenance == "tier1_ghcn":
+        try:
+            from .sources.meteostat_src import fetch_daily_tmax
+        except ImportError:
+            return None
+        tmax, _src, _note = fetch_daily_tmax(
+            lat, lon, when, station_hint=station_id, radius_km=radius_km,
+        )
+        return tmax
+
+    if provenance.startswith("tier2_hadcet"):
+        try:
+            from .sources.hadcet_src import fetch_daily_value
+        except ImportError:
+            return None
+        reading = fetch_daily_value(when)
+        return reading.value_c if reading is not None else None
+
+    if provenance == "tier3_era5":
+        try:
+            from .sources.era5_src import fetch_daily_tmax as era5_fetch
+        except ImportError:
+            return None
+        try:
+            return era5_fetch(lat, lon, when)
+        except Exception:
+            return None
+
+    if provenance == "tier4_20crv3":
+        try:
+            from .sources.twentycr_src import fetch_daily_tmax as cr_fetch
+        except ImportError:
+            return None
+        return cr_fetch(lat, lon, when)
+
+    return None
