@@ -4,6 +4,44 @@ All notable changes to ThermoStrife are documented here. Format:
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.1.0 — 2026-05-25
+
+First public release. Cuts a Zenodo DOI from the codebase that
+shipped Sprints 1–10.
+
+### Added
+
+- Headline `0.1.0` release tag; CITATION.cff refreshed and
+  Zenodo-ready (quoted version, valid ORCID, no em-dashes,
+  abstract expanded to mention the four-tier cascade and the
+  OR = 1.089 headline).
+- README rewritten end-to-end against the actual shipped code:
+  corrected pipeline diagram, corrected module table, real
+  `python scripts/...` quickstart, real H1 / H2 / H3 hypotheses,
+  headline numbers, peaceful-control panel block, stratification
+  block, SOTA-viz inventory.
+
+### Removed
+
+- **`thermostrife.baseline`**, **`thermostrife.backfill`**, and
+  **`thermostrife.cli`** — three `NotImplementedError` scaffold
+  stubs from the initial sprint that were never wired. The actual
+  baseline logic lives inside `resolve_event_anomaly()` in each
+  `sources/*.py` adapter; the actual end-to-end orchestration lives
+  in `scripts/run_inference.py`, `scripts/compare_panels.py`, and
+  `scripts/run_stratifications.py`. Removing the stubs eliminates
+  three broken promises that would have surfaced as
+  `NotImplementedError` to anyone who pip-installed from the v0.1.0
+  tag.
+- The `thermostrife-backfill` and `thermostrife-analyse` console
+  scripts in `pyproject.toml` (they pointed at the removed stubs).
+  The README and `docs/getting_started.md` now document the actual
+  `python scripts/...` workflow.
+- `setuptools-scm` from the `[build-system]` requires list (it was
+  listed but never wired; version is locked manually to `0.1.0`).
+- `docs/api/baseline.md`, `docs/api/backfill.md`, `docs/api/cli.md`
+  + the corresponding toctree entries in `docs/index.md`.
+
 ## Unreleased
 
 ### Added — Sprint 8 (BH-FDR + peaceful-crowd parallel control)
