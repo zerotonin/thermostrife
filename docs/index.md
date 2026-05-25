@@ -30,11 +30,8 @@ development/release_process
 
 api/constants
 api/lookup
-api/baseline
 api/inference
-api/backfill
 api/viz
-api/cli
 ```
 
 ```{toctree}
