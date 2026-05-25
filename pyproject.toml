@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "thermostrife"
-version = "0.1.0"
+version = "0.1.1"
 description = "Historical-uprisings climate companion to ThermoKourt — case-crossover test of temperature anomalies on days of mass civil strife (1750–2026)"
 readme = "README.md"
 license = {text = "MIT"}
@@ -78,7 +78,18 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v --tb=short"
+# Default-exclude `network`-marked tests: they hit live upstream
+# services (meteostat, NOAA THREDDS, ECMWF CDS) that are flaky in
+# CI and slow on a cold cache.  Run them explicitly with
+# `pytest -m network` when the cache is warm.
+addopts = "-v --tb=short -m 'not network'"
 markers = [
     "network: test hits an external service (meteostat, ERA5, …); cache is reused on rerun.",
+]
+filterwarnings = [
+    # boxplot(vert=) is deprecated in matplotlib 3.10+ in favour of
+    # orientation='vertical', but the new keyword was added in 3.10 and
+    # our matplotlib floor is >= 3.7, so we cannot switch yet without
+    # raising the floor.  Silence the heads-up for now.
+    "ignore::PendingDeprecationWarning",
 ]
