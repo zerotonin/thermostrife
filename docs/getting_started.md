@@ -8,6 +8,8 @@ cd thermostrife
 pip install -e ".[climate,dev]"
 ```
 
+Python ≥ 3.11 is required (meteostat 2.x dropped Python 3.10).
+
 ### Conda environment (recommended)
 
 ```bash
@@ -22,31 +24,46 @@ pip install -e ".[dev]"
 and drop a `.cdsapirc` file in your home directory containing:
 
 ```ini
-url: https://cds.climate.copernicus.eu/api/v2
-key: <UID>:<API-KEY>
+url: https://cds.climate.copernicus.eu/api
+key: <YOUR-API-KEY>
 ```
 
-The Tier 1 / 2 sources (meteostat + observatory archives) work without
-this and cover ~80 % of the dataset on their own.
+The Tier 1 / 2 sources (meteostat + HadCET) and the Tier 4 NOAA
+20CRv3 OPeNDAP feed work without this key and together cover the
+overwhelming majority of the dataset; the CDS key only matters when
+the cascade falls through to ERA5 (1981+ events outside Britain and
+outside meteostat-station radius).
 
 ## Verifying the installation
 
 ```bash
 python -c "import thermostrife; print(thermostrife.__version__)"
-thermostrife-backfill --help
-thermostrife-analyse --help
+pytest                 # runs the full test suite
 ```
 
 ## Your first run
 
-```bash
-thermostrife-backfill data/raw/uprisings_temperature.csv \
-    --output data/interim/uprisings_backfilled.csv
+The pipeline is a sequence of small scripts in `scripts/` that you run
+from the repo root.
 
-thermostrife-analyse data/interim/uprisings_backfilled.csv \
-    --output reports/
+```bash
+# Sanity-check the cascade against the curated CSV
+python scripts/validate_cascade.py
+
+# Inference on the headline violent panel
+python scripts/run_inference.py --panel violent
+
+# Inference on the peaceful-control panel
+python scripts/run_inference.py --panel peaceful
+
+# Side-by-side comparison + two-panel raincloud
+python scripts/compare_panels.py
+
+# Sensitivity stratifications (era / hemisphere / duration / event type)
+python scripts/run_stratifications.py
 ```
 
-The first call fills `day_temp_C` and the period-correct decadal mean
-where they were `NA`. The second runs the pre-registered hypothesis tests
-and writes figures + a `results.json` summary to `reports/`.
+Each script writes a Markdown report under `reports/` and a figure
+triple (SVG + PNG + CSV) under `reports/figs/`. The cascade caches
+per-(station, year-month) results under `data/cache/`, so re-runs after
+the first network-touching pass are fast.
