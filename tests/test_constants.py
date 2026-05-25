@@ -72,9 +72,9 @@ class TestSaveFigure:
         assert (tmp_path / "smoke.png").exists()
 
 
-@pytest.mark.parametrize("module", ["lookup", "baseline", "backfill", "viz", "cli"])
-def test_module_stubs_raise_notimplemented(module):
-    """Every stub module must surface NotImplementedError, not silently no-op."""
+@pytest.mark.parametrize("module", ["lookup", "inference", "viz"])
+def test_public_modules_import(module):
+    """Each public module imports cleanly."""
     import importlib
 
     mod = importlib.import_module(f"thermostrife.{module}")
