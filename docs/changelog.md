@@ -4,6 +4,54 @@ All notable changes to ThermoStrife are documented here. Format:
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.1.1 — 2026-05-25
+
+Fix-up release for two regressions discovered in v0.1.0's release
+build:
+
+1. CI ran the `network`-marked validation suite (4 tests in
+   `test_validation.py`) on a cold cache against live upstream
+   services (meteostat, NOAA PSL THREDDS for 20CRv3, ECMWF CDS for
+   ERA5). A transient NOAA THREDDS 502 sank one row of the
+   13-event verification gate during the v0.1.0 release build, even
+   though the code itself is unchanged.
+2. The v0.1.0 cleanup pass replaced `boxplot(vert=True)` with
+   `boxplot(orientation="vertical")` after seeing a deprecation
+   warning on matplotlib ≥ 3.10 — but the `orientation` keyword
+   was only *added* in matplotlib 3.10 and our floor is
+   `matplotlib>=3.7`. Anyone installing on matplotlib 3.7–3.9 hit
+   `TypeError: Axes.boxplot() got an unexpected keyword argument
+   'orientation'`.
+
+### Changed
+
+- `pyproject.toml` — default `addopts` now excludes `network`-marked
+  tests (`-m 'not network'`). The default `pytest` invocation runs
+  the 50 fast unit tests in ~3 s; integration tests stay opt-in via
+  `pytest -m network`.
+- `thermostrife/viz.py` — reverted `boxplot(orientation="vertical")`
+  to `boxplot(vert=True)` so the package works across the full
+  `matplotlib>=3.7` range. A `filterwarnings = ["ignore::PendingDeprecationWarning"]`
+  entry in `pyproject.toml`'s pytest config suppresses the
+  matplotlib 3.10+ heads-up warning so test output stays clean
+  on newer matplotlibs. When we eventually raise the floor to
+  `matplotlib>=3.10` we can switch back to `orientation=`.
+
+### Added
+
+- `.github/workflows/network-tests.yml` — weekly cron (Mondays
+  08:00 UTC) plus on-demand `workflow_dispatch` that runs the
+  network-marked tests against live upstreams. Marked
+  `continue-on-error: true` because a 502 from NOAA is not a
+  defect in our code.
+
+### Version bump
+
+Manual version bumped to `0.1.1` in `pyproject.toml`,
+`thermostrife/__init__.py`, and `CITATION.cff`. The Zenodo
+concept-DOI is unchanged; the version DOI mints fresh on tag
+push.
+
 ## 0.1.0 — 2026-05-25
 
 First public release. Cuts a Zenodo DOI from the codebase that
