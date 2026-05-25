@@ -4,9 +4,14 @@ title: "ThermoStrife: historical-uprisings temperature companion to ThermoKourt"
 type: software
 version: "0.1.1"
 date-released: "2026-05-25"
+doi: "10.5281/zenodo.20371612"
 license: MIT
 url: "https://github.com/zerotonin/thermostrife"
 repository-code: "https://github.com/zerotonin/thermostrife"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20371612"
+    description: "Zenodo archive of ThermoStrife v0.1.1"
 authors:
   - family-names: Geurten
     given-names: "Bart R.H."

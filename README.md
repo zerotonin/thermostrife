@@ -6,12 +6,8 @@
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.PENDING.svg)](https://zenodo.org/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20371612.svg)](https://doi.org/10.5281/zenodo.20371612)
 [![Companion: ThermoKourt](https://img.shields.io/badge/companion-ThermoKourt-009E73.svg)](https://github.com/zerotonin/thermokourt)
-
-> **Zenodo DOI badge:** placeholder until the first GitHub Release is
-> cut. The Zenodo GitHub webhook auto-mints a DOI on each tagged
-> release; the badge URL updates on next push.
 
 **Do violent uprisings cluster on unusually hot days?** Empirical
 companion to the [ThermoKourt](https://github.com/zerotonin/thermokourt)
@@ -184,7 +180,11 @@ MIT — see `LICENSE`.
 ## Citation
 
 If you use ThermoStrife in published work, please cite the Zenodo
-release whose DOI matches the version you used. Citation metadata is
-in `CITATION.cff` and on the GitHub repo's "Cite this repository"
-button. Once Zenodo has minted the first DOI, replace the placeholder
-badge above with the concept DOI.
+release whose DOI matches the version you used:
+
+> Geurten, B. R. H. (2026). *ThermoStrife: historical-uprisings
+> temperature companion to ThermoKourt* (Version 0.1.1) [Software].
+> Zenodo. https://doi.org/10.5281/zenodo.20371612
+
+Full citation metadata is in `CITATION.cff` and on the GitHub repo's
+"Cite this repository" button.
