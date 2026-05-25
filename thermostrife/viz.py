@@ -89,9 +89,8 @@ def plot_anomaly_raincloud(
 
     # ── Box plot on the centre line ───────────────────────────
     bp = ax.boxplot(
-        anom, positions=[0.46], widths=0.08, orientation="vertical",
-        showfliers=False, patch_artist=True,
-        medianprops={"color": WONG["vermilion"], "linewidth": 1.5},
+        anom, positions=[0.46], widths=0.08, vert=True, showfliers=False,
+        patch_artist=True, medianprops={"color": WONG["vermilion"], "linewidth": 1.5},
         boxprops={"facecolor": "white", "edgecolor": "black", "linewidth": 1},
         whiskerprops={"color": "black", "linewidth": 1},
         capprops={"color": "black", "linewidth": 1},
