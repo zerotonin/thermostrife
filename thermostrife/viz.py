@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 # Force the non-interactive backend before pyplot is touched.  This
 # module is import-time loaded by run_inference.py and tests; if a Qt
@@ -50,10 +49,6 @@ from .constants import (
     WONG,
     save_figure,
 )
-
-if TYPE_CHECKING:
-    pass
-
 
 # ─────────────────────────────────────────────────────────────────
 #  Headline raincloud: per-event anomaly distribution
@@ -94,8 +89,9 @@ def plot_anomaly_raincloud(
 
     # ── Box plot on the centre line ───────────────────────────
     bp = ax.boxplot(
-        anom, positions=[0.46], widths=0.08, vert=True, showfliers=False,
-        patch_artist=True, medianprops={"color": WONG["vermilion"], "linewidth": 1.5},
+        anom, positions=[0.46], widths=0.08, orientation="vertical",
+        showfliers=False, patch_artist=True,
+        medianprops={"color": WONG["vermilion"], "linewidth": 1.5},
         boxprops={"facecolor": "white", "edgecolor": "black", "linewidth": 1},
         whiskerprops={"color": "black", "linewidth": 1},
         capprops={"color": "black", "linewidth": 1},
@@ -247,7 +243,7 @@ def plot_warming_stripes_timeline(
     sd = float(np.std(deviations, ddof=1))
     vmax = stripe_clip_sigma * sd if sd > 0 else 1.0
     norm = mpl.colors.Normalize(vmin=-vmax, vmax=vmax)
-    cmap = mpl.cm.get_cmap(cmap_name)
+    cmap = mpl.colormaps[cmap_name]
 
     n_panels = len(panels)
     fig = plt.figure(figsize=(FIGURE_SIZE_DOUBLE[0], 1.6 + 0.9 * n_panels))
@@ -272,7 +268,7 @@ def plot_warming_stripes_timeline(
     all_anom = np.concatenate([df["anomaly_C"].to_numpy() for df in panels.values()])
     anom_clip = max(1.0, float(np.nanpercentile(np.abs(all_anom), 95)))
     event_norm = mpl.colors.Normalize(vmin=-anom_clip, vmax=anom_clip)
-    event_cmap = mpl.cm.get_cmap("RdBu_r")
+    event_cmap = mpl.colormaps["RdBu_r"]
 
     for i, (label, df) in enumerate(panels.items(), start=1):
         ax = fig.add_subplot(gs[i], sharex=ax_bg)
